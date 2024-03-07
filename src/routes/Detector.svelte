@@ -7,12 +7,10 @@
   onMount(async () => {
 
     // Constants
-    const filesetResolverBasePath =
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm";
-    const faceDetectorModelAssetPath =
-      "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite";
-    const faceDetectorDelegate = "GPU";
-    const faceDetectorRunningMode = "VIDEO";
+    const filesetResolverBasePath = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm";
+    const fdModelAssetPath = "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite";
+    const fdDelegate = "GPU";
+    const fdRunningMode = "VIDEO";
 
     // Elements
     const detectorSection = document.getElementById("detector");
@@ -29,13 +27,8 @@
 
     const initializeFaceDetector = async () => {
       const vision = await FilesetResolver.forVisionTasks(filesetResolverBasePath);
-      faceDetector = await FaceDetector.createFromOptions(vision, {
-        baseOptions: {
-          modelAssetPath: faceDetectorModelAssetPath,
-          delegate: faceDetectorDelegate,
-        },
-        runningMode: faceDetectorRunningMode,
-      });
+      const faceDetectorOptions = { baseOptions: { modelAssetPath: fdModelAssetPath, delegate: fdDelegate }, runningMode: fdRunningMode };
+      faceDetector = await FaceDetector.createFromOptions(vision, faceDetectorOptions);
       detectorSection.classList.remove("invisible");
       enableWebcamButton.addEventListener("click", enableCam);
       captureButton.addEventListener("click", capture);
