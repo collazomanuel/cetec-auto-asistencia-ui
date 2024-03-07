@@ -32,6 +32,15 @@
       detectorSection.classList.remove("invisible");
       enableWebcamButton.addEventListener("click", enableCam);
       captureButton.addEventListener("click", capture);
+      if (navigator.geolocation) {
+			  navigator.geolocation.getCurrentPosition((pos) => {
+				  localStorage.setItem('latitude', JSON.stringify(pos.coords.latitude));
+				  localStorage.setItem('longitude', JSON.stringify(pos.coords.longitude));
+			});
+		  }
+		  else {
+			  console.log("Geolocation is not supported by this browser.");
+		  }
     };
 
     const enableCam = async () => {
@@ -99,7 +108,7 @@
       const dataURL = canvas.toDataURL();
       const img = document.createElement("img");
       img.src = dataURL;
-      registerStudent("mcollazo@fi.uba.ar", img.src, 1234, 5678);
+      registerStudent("mcollazo@fi.uba.ar", img.src, localStorage.getItem('latitude'), localStorage.getItem('longitude'));
     };
 
     initializeFaceDetector();
