@@ -1,9 +1,9 @@
 import { sendPostRequest } from './requestQueue';
 
-const registerStudent = async (email, image, latitude, longitude) => {
+const registerStudent = async (email, image, latitude, longitude, accuracy) => {
 	try {
 		const url = 'http://localhost:8000' + '/student';
-		const body = { email: email, image: image, latitude: latitude, longitude: longitude };
+		const body = { email: email, image: image, latitude: latitude, longitude: longitude, accuracy: accuracy };
 		const response = sendPostRequest(url, body);
 		return response.data;
 	} catch (error) {

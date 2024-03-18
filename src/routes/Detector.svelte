@@ -33,10 +33,17 @@
       enableWebcamButton.addEventListener("click", enableCam);
       captureButton.addEventListener("click", capture);
       if (navigator.geolocation) {
-			  navigator.geolocation.getCurrentPosition((pos) => {
-				  localStorage.setItem('latitude', JSON.stringify(pos.coords.latitude));
-				  localStorage.setItem('longitude', JSON.stringify(pos.coords.longitude));
-			});
+			  navigator.geolocation.getCurrentPosition(
+          (pos) => {
+				    localStorage.setItem('latitude', JSON.stringify(pos.coords.latitude));
+				    localStorage.setItem('longitude', JSON.stringify(pos.coords.longitude));
+            localStorage.setItem('accuracy', JSON.stringify(pos.coords.accuracy));
+          },
+          () => {
+            console.log("Error retrieving location");
+          },
+          { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        );
 		  }
 		  else {
 			  console.log("Geolocation is not supported by this browser.");
@@ -108,7 +115,7 @@
       const dataURL = canvas.toDataURL();
       const img = document.createElement("img");
       img.src = dataURL;
-      registerStudent("mcollazo@fi.uba.ar", img.src, localStorage.getItem('latitude'), localStorage.getItem('longitude'));
+      registerStudent("mcollazo@fi.uba.ar", img.src, localStorage.getItem('latitude'), localStorage.getItem('longitude'), localStorage.getItem('accuracy'));
     };
 
     initializeFaceDetector();
