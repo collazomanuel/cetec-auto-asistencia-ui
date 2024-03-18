@@ -32,6 +32,10 @@
       detectorSection.classList.remove("invisible");
       enableWebcamButton.addEventListener("click", enableCam);
       captureButton.addEventListener("click", capture);
+      setGeolocation();
+    };
+
+    const setGeolocation = () => {
       if (navigator.geolocation) {
 			  navigator.geolocation.getCurrentPosition(
           (pos) => {
