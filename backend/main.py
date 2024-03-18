@@ -12,6 +12,7 @@ class Student(BaseModel):
     image: str = None
     latitude: str
     longitude: str
+    accuracy: str
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins = [BACKEND_URL], allow_credentials = True, allow_methods = ['*'], allow_headers = ['*'])
@@ -25,6 +26,7 @@ async def student(data: Student):
         'email': data.email,
         'latitude': data.latitude,
         'longitude': data.longitude,
+        'accuracy': data.accuracy,
         'date': datetime.utcnow()
     }))
     return ('Ok')
