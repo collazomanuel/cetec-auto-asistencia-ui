@@ -1,5 +1,5 @@
 
 <script>
-    import Detector from './Detector.svelte';
+    import Detector from '../Detector.svelte'
 </script>
 <Detector />
