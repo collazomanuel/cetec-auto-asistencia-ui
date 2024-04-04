@@ -4,6 +4,8 @@
   import { FaceDetector, FilesetResolver } from "@mediapipe/tasks-vision";
   import { registerStudent}  from './services';
 
+  export let user;
+
   onMount(async () => {
 
     // Constants
@@ -119,7 +121,7 @@
       const dataURL = canvas.toDataURL();
       const img = document.createElement("img");
       img.src = dataURL;
-      registerStudent("mcollazo@fi.uba.ar", img.src, localStorage.getItem('latitude'), localStorage.getItem('longitude'), localStorage.getItem('accuracy'));
+      registerStudent(user.email, img.src, localStorage.getItem('latitude'), localStorage.getItem('longitude'), localStorage.getItem('accuracy'));
     };
 
     initializeFaceDetector();
