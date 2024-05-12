@@ -24,7 +24,6 @@
 
     // Variables
     let faceDetector = null;
-    let children = [];
     let lastVideoTime = -1;
 
     const initializeFaceDetector = async () => {
@@ -80,37 +79,8 @@
         const detections = faceDetector.detectForVideo(video, startTimeMs).detections;
         if (detections.length == 1) captureButton.disabled = false;
         else captureButton.disabled = true;
-        displayVideoDetections(detections);
       }
       window.requestAnimationFrame(predictWebcam);
-    };
-
-    const displayVideoDetections = async (detections) => {
-      for (let child of children) liveView.removeChild(child);
-      children.splice(0);
-      for (let detection of detections) {
-        const p = document.createElement("p");
-        p.style = "top: " + (detection.boundingBox.originY - 30) + "px;";
-        const highlighter = document.createElement("div");
-        highlighter.setAttribute("class", "highlighter");
-        highlighter.style =
-          "left: " + (video.offsetWidth - detection.boundingBox.width - detection.boundingBox.originX) + "px;" +
-          "top: " + detection.boundingBox.originY + "px;" +
-          "width: " + (detection.boundingBox.width - 10) + "px;" +
-          "height: " + detection.boundingBox.height + "px;";
-        liveView.appendChild(highlighter);
-        liveView.appendChild(p);
-        children.push(highlighter);
-        children.push(p);
-        for (let keypoint of detection.keypoints) {
-          const keypointEl = document.createElement("span");
-          keypointEl.className = "key-point";
-          keypointEl.style.top = `${keypoint.y * video.offsetHeight - 3}px`;
-          keypointEl.style.left = `${video.offsetWidth - keypoint.x * video.offsetWidth - 3}px`;
-          liveView.appendChild(keypointEl);
-          children.push(keypointEl);
-        }
-      }
     };
 
     const capture = () => {
