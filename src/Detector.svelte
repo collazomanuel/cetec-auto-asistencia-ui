@@ -84,8 +84,12 @@
 	}
 </script>
 
-<section>
-	<video bind:this={video} autoplay playsinline><track kind="captions" /></video>
-	<canvas bind:this={canvas} style="display: none;"></canvas>
-	<button on:click={capture} disabled={!$isFaceDetected}> Tomar foto </button>
+<section class='app'>
+	<div class='camera'>
+		<video bind:this={video} autoplay playsinline>
+			<track kind='captions' />
+		</video>
+		<canvas bind:this={canvas} style='display: none;'></canvas>
+	</div>
+	<button class='button' on:click={capture} disabled={!$isFaceDetected}> Tomar foto </button>
 </section>
