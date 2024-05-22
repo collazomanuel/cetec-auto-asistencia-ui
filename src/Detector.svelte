@@ -86,8 +86,8 @@
 
 <section class='app'>
 	<div class='camera'>
-		<video bind:this={video} autoplay playsinline>
-			<track kind='captions' />
+		<video bind:this={video} autoplay playsinline style='border-color: {$isFaceDetected ? 'green' : 'red'}'>
+			<track kind='captions'/>
 		</video>
 		<canvas bind:this={canvas} style='display: none;'></canvas>
 	</div>
