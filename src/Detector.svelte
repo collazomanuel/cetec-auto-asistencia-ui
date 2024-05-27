@@ -63,13 +63,11 @@
 	}
 
 	async function predictWebcam() {
-		if (!video || video.readyState !== 4) {
-			window.requestAnimationFrame(predictWebcam);
-		} else {
+		if (video && video.readyState == 4) {
 			const detections = await faceDetector.detectForVideo(video, performance.now()).detections;
-			isFaceDetected.set(detections.length === 1);
-			window.requestAnimationFrame(predictWebcam);
+			isFaceDetected.set(await faceDetector.detectForVideo(video, performance.now()).detections.length === 1);
 		}
+		window.requestAnimationFrame(predictWebcam);
 	}
 
 	function capture() {
