@@ -71,14 +71,15 @@
 	}
 
 	function capture() {
-		canvas.width = video.videoWidth;
-		canvas.height = video.videoHeight;
+      	canvas.width = video.videoWidth;
+      	canvas.height = video.videoHeight;
+      	canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      	const photo = canvas.toDataURL();
 		const email = user.email;
-		const dataURL = canvas.toDataURL();
 		const latitude = localStorage.getItem('latitude');
 		const longitude = localStorage.getItem('longitude');
 		const accuracy = localStorage.getItem('accuracy');
-		registerStudent(email, dataURL, latitude, longitude, accuracy);
+		registerStudent(email, photo, latitude, longitude, accuracy);
 	}
 </script>
 
