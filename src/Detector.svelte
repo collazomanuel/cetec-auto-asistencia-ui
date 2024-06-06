@@ -83,7 +83,7 @@
 	}
 </script>
 
-<section class='app'>
+<section>
 	<div class='camera'>
 		<video bind:this={video} autoplay playsinline style='border-color: {$isFaceDetected ? 'green' : 'red'}'>
 			<track kind='captions'/>
