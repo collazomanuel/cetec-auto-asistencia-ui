@@ -21,18 +21,18 @@ async function sendPutRequest(url, body) {
 	const axiosRequest = () => axios.put(url, body);
 
 	if (typeof window !== 'undefined' && get(isConnected))
-		return performRequest(axiosRequest); // Ensure window is defined before checking connectivity
+		return performRequest(axiosRequest);
 	else queueRequest(axiosRequest);
 }
 
 function retryQueuedRequests() {
 	while (requestQueue.length > 0) {
-		const request = requestQueue.shift(); // Get the first request in the queue
-		performRequest(request); // Execute it
+		const request = requestQueue.shift();
+		performRequest(request);
 	}
 }
 
 if (typeof window !== 'undefined')
-  window.addEventListener('online', retryQueuedRequests); // Only listen for online/offline events in the browser
+  window.addEventListener('online', retryQueuedRequests);
 
 export { sendPutRequest };
