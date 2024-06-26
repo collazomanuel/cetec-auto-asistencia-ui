@@ -65,7 +65,7 @@
 	async function predictWebcam() {
 		if (video && video.readyState == 4) {
 			const detections = await faceDetector.detectForVideo(video, performance.now()).detections;
-			isFaceDetected.set(await faceDetector.detectForVideo(video, performance.now()).detections.length === 1);
+			isFaceDetected.set(detections.length === 1);
 		}
 		window.requestAnimationFrame(predictWebcam);
 	}
