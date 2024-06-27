@@ -63,7 +63,7 @@
 	}
 
 	async function predictWebcam() {
-		if (video && video.readyState == HAVE_ENOUGH_DATA) {
+		if (video && video.readyState == 4) {
 			const detections = await faceDetector.detectForVideo(video, performance.now()).detections;
 			isFaceDetected.set(detections.length === 1);
 		}
