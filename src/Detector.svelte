@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { FaceDetector, FilesetResolver } from '@mediapipe/tasks-vision';
+	import { LoadRing } from 'svelte-loading-animation';
 	import { registerStudent } from './services';
 
 	export let user;
@@ -12,6 +13,8 @@
 	let faceDetector;
 
 	const isFaceDetected = writable(false);
+	const loading = writable(false);
+	const result = writable('Empty');
 
 	const setGeolocation = () => {
 		if (navigator.geolocation) {
@@ -70,7 +73,7 @@
 		window.requestAnimationFrame(predictWebcam);
 	}
 
-	function capture() {
+	async function capture() {
       	canvas.width = video.videoWidth;
       	canvas.height = video.videoHeight;
       	canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -79,16 +82,32 @@
 		const latitude = localStorage.getItem('latitude');
 		const longitude = localStorage.getItem('longitude');
 		const accuracy = localStorage.getItem('accuracy');
-		registerStudent(email, photo, latitude, longitude, accuracy);
+		loading.set(true);
+		const response = await registerStudent(email, photo, latitude, longitude, accuracy);
+		loading.set(false);
+		result.set(response);
+		console.log(response);
 	}
 </script>
 
 <section>
-	<div class='camera'>
-		<video bind:this={video} autoplay playsinline style='border-color: {$isFaceDetected ? 'green' : 'red'}'>
-			<track kind='captions'/>
-		</video>
-		<canvas bind:this={canvas} style='display: none;'></canvas>
-	</div>
-	<button class='button' on:click={capture} disabled={!$isFaceDetected}> Tomar foto </button>
+	{#if $loading}
+		<LoadRing color="green"/>
+	{:else}
+		{#if $result != 'Empty'}
+			{#if $result == 'Valid'}
+				<h1 style="color: green">Asistencia registrada ✓</h1>	
+			{:else}
+				<h1 style="color: red">Error con el reconocimiento facial</h1>	
+			{/if}
+		{:else}
+		<div class='camera'>
+			<video bind:this={video} autoplay playsinline style='border-color: {$isFaceDetected ? 'green' : 'red'}'>
+				<track kind='captions'/>
+			</video>
+			<canvas bind:this={canvas} style='display: none;'></canvas>
+		</div>
+		<button class='button' on:click={capture} disabled={!$isFaceDetected}> Tomar foto </button>
+		{/if}
+	{/if}
 </section>
