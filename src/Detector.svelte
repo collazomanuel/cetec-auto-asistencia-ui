@@ -74,10 +74,10 @@
 	}
 
 	async function capture() {
-      	canvas.width = video.videoWidth;
-      	canvas.height = video.videoHeight;
-      	canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-      	const photo = canvas.toDataURL();
+		canvas.width = video.videoWidth;
+		canvas.height = video.videoHeight;
+		canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+		const photo = canvas.toDataURL();
 		const email = user.email;
 		const latitude = localStorage.getItem('latitude');
 		const longitude = localStorage.getItem('longitude');
@@ -92,22 +92,25 @@
 
 <section>
 	{#if $loading}
-		<LoadRing color="green"/>
-	{:else}
-		{#if $result != 'Empty'}
-			{#if $result == 'Valid'}
-				<h1 style="color: green">Asistencia registrada ✓</h1>	
-			{:else}
-				<h1 style="color: red">Error con el reconocimiento facial</h1>	
-			{/if}
+		<LoadRing color="green" />
+	{:else if $result != 'Empty'}
+		{#if $result == 'Valid'}
+			<h1 style="color: green">Asistencia registrada ✓</h1>
 		{:else}
-		<div class='camera'>
-			<video bind:this={video} autoplay playsinline style='border-color: {$isFaceDetected ? 'green' : 'red'}'>
-				<track kind='captions'/>
-			</video>
-			<canvas bind:this={canvas} style='display: none;'></canvas>
-		</div>
-		<button class='button' on:click={capture} disabled={!$isFaceDetected}> Tomar foto </button>
+			<h1 style="color: red">Error con el reconocimiento facial</h1>
 		{/if}
+	{:else}
+		<div class="camera">
+			<video
+				bind:this={video}
+				autoplay
+				playsinline
+				style="border-color: {$isFaceDetected ? 'green' : 'red'}"
+			>
+				<track kind="captions" />
+			</video>
+			<canvas bind:this={canvas} style="display: none"></canvas>
+		</div>
+		<button class="button" on:click={capture} disabled={!$isFaceDetected}> Tomar foto </button>
 	{/if}
 </section>
