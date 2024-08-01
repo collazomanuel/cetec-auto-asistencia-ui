@@ -4,7 +4,7 @@
 	import { writable } from 'svelte/store';
 	import { FaceDetector, FilesetResolver } from '@mediapipe/tasks-vision';
 	import { LoadRing } from 'svelte-loading-animation';
-	import services from './services';
+	import { getExams, registerStudent, registerAttendance } from './services';
 
 	export let user;
 
@@ -84,7 +84,7 @@
 		const longitude = localStorage.getItem('longitude');
 		const accuracy = localStorage.getItem('accuracy');
 		loading.set(true);
-		const response = await services.registerAttendance(code, email, latitude, longitude, accuracy, photo);
+		const response = await registerAttendance(code, email, latitude, longitude, accuracy, photo);
 		loading.set(false);
 		result.set(response);
 		console.log(response);
