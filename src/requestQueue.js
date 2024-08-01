@@ -17,9 +17,15 @@ function queueRequest(fn) {
 	requestQueue.push(fn);
 }
 
-async function sendPutRequest(url, body) {
-	const axiosRequest = () => axios.put(url, body);
+async function sendGetRequest(url) {
+	const axiosRequest = () => axios.get(url);
+	if (typeof window !== 'undefined' && get(isConnected))
+		return performRequest(axiosRequest);
+	else queueRequest(axiosRequest);
+}
 
+async function sendPostRequest(url, body) {
+	const axiosRequest = () => axios.post(url, body);
 	if (typeof window !== 'undefined' && get(isConnected))
 		return performRequest(axiosRequest);
 	else queueRequest(axiosRequest);
@@ -35,4 +41,4 @@ function retryQueuedRequests() {
 if (typeof window !== 'undefined')
   window.addEventListener('online', retryQueuedRequests);
 
-export { sendPutRequest };
+export { sendGetRequest, sendPostRequest };
