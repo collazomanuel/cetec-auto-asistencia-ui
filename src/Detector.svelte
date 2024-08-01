@@ -4,7 +4,7 @@
 	import { writable } from 'svelte/store';
 	import { FaceDetector, FilesetResolver } from '@mediapipe/tasks-vision';
 	import { LoadRing } from 'svelte-loading-animation';
-	import { registerStudent } from './services';
+	import services from './services';
 
 	export let user;
 
@@ -78,12 +78,13 @@
 		canvas.height = video.videoHeight;
 		canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 		const photo = canvas.toDataURL();
+		const code = "123_Test";
 		const email = user.email;
 		const latitude = localStorage.getItem('latitude');
 		const longitude = localStorage.getItem('longitude');
 		const accuracy = localStorage.getItem('accuracy');
 		loading.set(true);
-		const response = await registerStudent(email, photo, latitude, longitude, accuracy);
+		const response = await services.registerAttendance(code, email, latitude, longitude, accuracy, photo);
 		loading.set(false);
 		result.set(response);
 		console.log(response);
@@ -96,7 +97,9 @@
 	{:else if $result != 'Empty'}
 		{#if $result == 'Valid'}
 			<h1 style="color: green">Asistencia registrada ✓</h1>
-		{:else}
+		{:else if $result == 'Invalid location'}
+			<h1 style="color: red">Error con la validación de ubicación</h1>
+		{:else if $result == 'Invalid face'}
 			<h1 style="color: red">Error con el reconocimiento facial</h1>
 		{/if}
 	{:else}
