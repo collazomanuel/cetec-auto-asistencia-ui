@@ -21,7 +21,7 @@ git clone https://github.com/collazomanuel/cetec-auto-asistencia-ui.git
 
 ```bash
 cd cetec-auto-asistencia-ui
-npm install
+npm install --force
 ```
 
 3. Ejecuta el servidor de desarrollo

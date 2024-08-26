@@ -1,11 +1,13 @@
 :root {
-  --clr-1: #ffffff;
-  --clr-2: #d3e4e2;
-  --clr-3: #373a36;
-  --clr-4: #008bce;
-  --clr-5: #f2a900;
-  --clr-6: #b3c50e;
-  --clr-7: #d9d9d6;
+  --clr-1: #008bce;
+  --clr-2: #f2a900;
+  --clr-3: #b3c50e;
+  --clr-4: #923436;
+  --clr-5: #8447ae;
+  --clr-6: #1e1f1f;
+  --clr-7: #363a36;
+  --clr-8: #d8d9db;
+  --clr-9: #ffffff;
 }
 
 body {
@@ -19,6 +21,8 @@ body {
   text-align: center;
   width: 100%;
   height: 100vh !important;
+  font-family: 'Liberation Serif', sans-serif;
+  background-color: var(--clr-8);
 }
 
 video {
@@ -33,22 +37,51 @@ video {
   margin-top: 5vh;
 }
 
+canvas {
+  display: none;
+}
+
 .button {
-  background-color: var(--clr-4);
+  background-color: var(--clr-1);
   border: none;
-  color: var(--clr-1);
+  color: var(--clr-9);
   padding: 15px 32px;
   text-align: center;
-  font-size: 4vh;
+  font-size: 3vh;
   margin: 8vh;
 }
 
 .button:hover {
-  background-color: var(--clr-5);
+  background-color: var(--clr-2);
   cursor: pointer;
 }
 
 .button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.result {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+
+.success {
+  color: var(--clr-1);
+}
+
+.error {
+  color: var(--clr-4);
+}
+
+.returnButton {
+  font-size: 2vh;
+  margin: 4vh;
+}
+
+.ring {
+  filter: invert(35%) sepia(44%) saturate(5705%) hue-rotate(179deg) brightness(100%) contrast(100%);
 }
