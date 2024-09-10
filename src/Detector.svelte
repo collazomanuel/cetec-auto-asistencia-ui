@@ -115,6 +115,8 @@
 		{:else if $mode == Mode.RESULT}
 			{#if $result == 'attendance_valid'}
 				<h3 class='success'>Asistencia registrada ✓</h3>
+			{:else if $result == 'attendance_error_email'}
+				<h3 class='error'>Error: Correo no registrado</h3>
 			{:else if $result == 'attendance_error_location'}
 				<h3 class='error'>Error: Ubicación inválida</h3>
 			{:else if $result == 'attendance_error_face'}
