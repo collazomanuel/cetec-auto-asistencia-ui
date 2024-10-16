@@ -10,6 +10,17 @@ const getExams = async () => {
 	}
 };
 
+const registerExam = async (email, name, start, length, margin) => {
+	try {
+		const url = import.meta.env.VITE_API_URL + '/exam';
+		const body = { email: email, code: '', name: name, start: start, length: length, margin: margin };
+		const response = await sendPostRequest(url, body);
+		return response;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
 const registerStudent = async (email, image) => {
 	try {
 		const url = import.meta.env.VITE_API_URL + '/student';
@@ -32,4 +43,4 @@ const registerAttendance = async (email, code, latitude, longitude, accuracy, im
 	}
 };
 
-export { getExams, registerStudent, registerAttendance };
+export { getExams, registerExam, registerStudent, registerAttendance };

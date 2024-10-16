@@ -11,9 +11,9 @@
 		DEFAULT: 0,
 		INIT: 1,
 		LOADING: 2,
-		REGISTER: 3,
-		ATTENDANCE: 4,
-		RESULT: 5
+		RESULT: 3,
+		STUDENT: 4,
+		ATTENDANCE: 5
 	};
 
 	export let user;
@@ -69,7 +69,7 @@
 	const handleSubmit = async () => {
 		const email = user.email;
 		const image = await capturePhoto();
-		if ($mode == Mode.REGISTER) {
+		if ($mode == Mode.STUDENT) {
 			mode.set(Mode.LOADING);
 			const response = await registerStudent(email, image);
 			result.set(response);
@@ -135,7 +135,7 @@
 			<DropdownToggle color='white' caret>
 				{$mode == Mode.ATTENDANCE
 					? $selectedExam.name
-					: $mode == Mode.REGISTER
+					: $mode == Mode.STUDENT
 						? 'Registrarse'
 						: 'Elegir acción'}
 			</DropdownToggle>
@@ -154,9 +154,9 @@
 				{/each}
 				<DropdownItem divider />
 				<DropdownItem
-					active={$mode == Mode.REGISTER}
+					active={$mode == Mode.STUDENT}
 					on:click={() => {
-						mode.set(Mode.REGISTER);
+						mode.set(Mode.STUDENT);
 					}}
 				>
 					Registrarse
@@ -181,7 +181,7 @@
 			disabled={!(
 				$coords != null &&
 				$isFaceDetected &&
-				($mode == Mode.ATTENDANCE || $mode == Mode.REGISTER)
+				($mode == Mode.ATTENDANCE || $mode == Mode.STUDENT)
 			)}
 		>
 			Tomar foto
