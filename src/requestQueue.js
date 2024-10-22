@@ -31,6 +31,13 @@ async function sendPostRequest(url, body) {
 	else queueRequest(axiosRequest);
 }
 
+async function sendPutRequest(url, body) {
+	const axiosRequest = () => axios.put(url, body);
+	if (typeof window !== 'undefined' && get(isConnected))
+		return performRequest(axiosRequest);
+	else queueRequest(axiosRequest);
+}
+
 function retryQueuedRequests() {
 	while (requestQueue.length > 0) {
 		const request = requestQueue.shift();
@@ -41,4 +48,4 @@ function retryQueuedRequests() {
 if (typeof window !== 'undefined')
   window.addEventListener('online', retryQueuedRequests);
 
-export { sendGetRequest, sendPostRequest };
+export { sendGetRequest, sendPostRequest, sendPutRequest };

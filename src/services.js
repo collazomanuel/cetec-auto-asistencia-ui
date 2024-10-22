@@ -1,4 +1,4 @@
-import { sendGetRequest, sendPostRequest } from './requestQueue';
+import { sendGetRequest, sendPostRequest, sendPutRequest } from './requestQueue';
 
 const getExams = async () => {
 	try {
@@ -10,7 +10,7 @@ const getExams = async () => {
 	}
 };
 
-const registerExam = async (email, name, start, length, margin) => {
+const addExam = async (email, name, start, length, margin) => {
 	try {
 		const url = import.meta.env.VITE_API_URL + '/exam';
 		const body = { email: email, code: '', name: name, start: start, length: length, margin: margin };
@@ -21,7 +21,18 @@ const registerExam = async (email, name, start, length, margin) => {
 	}
 };
 
-const registerStudent = async (email, image) => {
+const editExam = async (email, code, name, start, length, margin) => {
+	try {
+		const url = import.meta.env.VITE_API_URL + '/exam';
+		const body = { email: email, code: code, name: name, start: start, length: length, margin: margin };
+		const response = await sendPutRequest(url, body);
+		return response;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+const addStudent = async (email, image) => {
 	try {
 		const url = import.meta.env.VITE_API_URL + '/student';
 		const body = { email: email, image: image };
@@ -32,7 +43,7 @@ const registerStudent = async (email, image) => {
 	}
 };
 
-const registerAttendance = async (email, code, latitude, longitude, accuracy, image) => {
+const addAttendance = async (email, code, latitude, longitude, accuracy, image) => {
 	try {
 		const url = import.meta.env.VITE_API_URL + '/attendance';
 		const body = { email: email, code: code, latitude: latitude, longitude: longitude, accuracy: accuracy, image: image };
@@ -43,4 +54,4 @@ const registerAttendance = async (email, code, latitude, longitude, accuracy, im
 	}
 };
 
-export { getExams, registerExam, registerStudent, registerAttendance };
+export { getExams, addExam, editExam, addStudent, addAttendance };

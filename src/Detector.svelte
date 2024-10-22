@@ -5,7 +5,7 @@
 	import { FaceDetector, FilesetResolver } from '@mediapipe/tasks-vision';
 	import { LoadRing } from 'svelte-loading-animation';
 	import { Styles, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'sveltestrap';
-	import { getExams, registerStudent, registerAttendance } from './services';
+	import { getExams, addStudent, addAttendance } from './services';
 
 	const Mode = {
 		DEFAULT: 0,
@@ -71,7 +71,7 @@
 		const image = await capturePhoto();
 		if ($mode == Mode.STUDENT) {
 			mode.set(Mode.LOADING);
-			const response = await registerStudent(email, image);
+			const response = await addStudent(email, image);
 			result.set(response);
 			mode.set(Mode.RESULT);
 		} else if ($mode == Mode.ATTENDANCE) {
@@ -80,7 +80,7 @@
 			const latitude = $coords.latitude;
 			const longitude = $coords.longitude;
 			const accuracy = $coords.accuracy;
-			const response = await registerAttendance(email, code, latitude, longitude, accuracy, image);
+			const response = await addAttendance(email, code, latitude, longitude, accuracy, image);
 			result.set(response);
 			mode.set(Mode.RESULT);
 		} else {
@@ -140,6 +140,15 @@
 						: 'Elegir acción'}
 			</DropdownToggle>
 			<DropdownMenu>
+				<DropdownItem
+					active={$mode == Mode.STUDENT}
+					on:click={() => {
+						mode.set(Mode.STUDENT);
+					}}
+				>
+					Registrarse
+				</DropdownItem>
+				<DropdownItem divider />
 				<DropdownItem header>Agregar asistencia</DropdownItem>
 				{#each $availableExams as exam}
 					<DropdownItem
@@ -152,15 +161,6 @@
 						{exam.name}
 					</DropdownItem>
 				{/each}
-				<DropdownItem divider />
-				<DropdownItem
-					active={$mode == Mode.STUDENT}
-					on:click={() => {
-						mode.set(Mode.STUDENT);
-					}}
-				>
-					Registrarse
-				</DropdownItem>
 			</DropdownMenu>
 		</Dropdown>
 
