@@ -5,6 +5,7 @@
 	import { LoadRing } from 'svelte-loading-animation';
 	import { Styles, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'sveltestrap';
 	import { getExams, addExam, editExam } from './services';
+	import ResultMessage from '../src/ResultMessage.svelte';
 
 	const Mode = {
 		DEFAULT: 0,
@@ -78,19 +79,11 @@
 </script>
 
 <section>
-	<div class="result">
+	<div class="resultScreen">
 		{#if $mode == Mode.LOADING || $mode == Mode.INIT}
 			<LoadRing class="ring" />
 		{:else if $mode == Mode.RESULT}
-			{#if $result == 'exam_valid'}
-				<h3 class="success">Examen registrado ✓</h3>
-			{:else if $result == 'exam_update'}
-				<h3 class="success">Examen actualizado ✓</h3>
-			{:else if $result == 'exam_error_email'}
-				<h3 class="error">Error: Usuario sin permisos</h3>
-				{:else if $result == 'exam_error_code'}
-				<h3 class="error">Error: Examen no reconocido</h3>
-			{/if}
+			<ResultMessage result={$result} />
 			<button
 				class="button returnButton"
 				on:click={() => {

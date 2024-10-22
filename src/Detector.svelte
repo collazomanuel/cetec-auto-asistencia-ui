@@ -6,6 +6,8 @@
 	import { LoadRing } from 'svelte-loading-animation';
 	import { Styles, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'sveltestrap';
 	import { getExams, addStudent, addAttendance } from './services';
+	import ResultMessage from '../src/ResultMessage.svelte';
+
 
 	const Mode = {
 		DEFAULT: 0,
@@ -109,23 +111,11 @@
 </script>
 
 <section>
-	<div class='result'>
+	<div class='resultScreen'>
 		{#if $mode == Mode.LOADING || $mode == Mode.INIT}
 			<LoadRing class='ring' />
 		{:else if $mode == Mode.RESULT}
-			{#if $result == 'attendance_valid'}
-				<h3 class='success'>Asistencia registrada ✓</h3>
-			{:else if $result == 'attendance_error_email'}
-				<h3 class='error'>Error: Correo no registrado</h3>
-			{:else if $result == 'attendance_error_location'}
-				<h3 class='error'>Error: Ubicación inválida</h3>
-			{:else if $result == 'attendance_error_face'}
-				<h3 class='error'>Error: Reconocimiento facial inválido</h3>
-			{:else if $result == 'registration_valid'}
-				<h3 class='success'>Usuario registrado ✓</h3>
-			{:else if $result == 'registration_error_email'}
-				<h3 class='error'>Error: Correo ya registrado</h3>
-			{/if}
+			<ResultMessage result={$result} />
 			<button class='button returnButton' on:click={() => {result.set(null); mode.set(Mode.DEFAULT);}}> Regresar </button>
 		{/if}
 	</div>
