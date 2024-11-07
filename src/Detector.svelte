@@ -1,4 +1,4 @@
-<script>
+<script lang='ts'>
 	import './styles.css';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -8,28 +8,23 @@
 	import { getExams, addStudent, addAttendance } from './services';
 	import ResultMessage from '../src/ResultMessage.svelte';
 
+	import type { UserType, ExamType, AttendanceType } from '$lib/types/exam.type';
 
-	const Mode = {
-		DEFAULT: 0,
-		INIT: 1,
-		LOADING: 2,
-		RESULT: 3,
-		STUDENT: 4,
-		ATTENDANCE: 5
-	};
+	import { Mode } from '$lib/types/enums';
 
-	export let user;
+	export let user : UserType;
 
-	let video;
-	let canvas;
-	let faceDetector;
+	let video : any;
+	let canvas : any;
+	let faceDetector : any;
+	
+	let mode : Mode | null = null;
+	let result : string | null = null;
+	let availableExams : ExamType[] | null = null;
+	let selectedExam : ExamType | null = null;
 
-	const mode = writable(Mode.INIT);
-	const isFaceDetected = writable(false);
-	const coords = writable(null);
-	const availableExams = writable([]);
-	const selectedExam = writable(null);
-	const result = writable(null);
+	let isFaceDetected : boolean | null = null;
+	let coords : any = null;
 
 	const initializeFaceDetector = async () => {
 		const filesetResolverBasePath = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm';
@@ -50,41 +45,48 @@
 	const predictWebcam = async () => {
 		if (video && video.readyState == 4) {
 			const detections = await faceDetector.detectForVideo(video, performance.now()).detections;
-			isFaceDetected.set(detections.length === 1);
+			isFaceDetected = detections.length == 1;
 		}
 		window.requestAnimationFrame(predictWebcam);
 	};
 
 	const setGeolocation = async () => {
 		navigator?.geolocation.getCurrentPosition(
-			(pos) => { coords.set(pos.coords) },
+			(pos) => { coords = pos.coords },
 			() => { console.log('Error retrieving location') },
 			{ enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
 		);
 	};
 
 	const setExams = async () => {
-		const response = await getExams();
-		availableExams.set(response);
+		availableExams = await getExams();
 	};
 
 	const handleSubmit = async () => {
 		const email = user.email;
 		const image = await capturePhoto();
-		if ($mode == Mode.STUDENT) {
-			mode.set(Mode.LOADING);
-			const response = await addStudent(email, image);
-			result.set(response);
-			mode.set(Mode.RESULT);
-		} else if ($mode == Mode.ATTENDANCE) {
-			mode.set(Mode.LOADING);
-			const code = $selectedExam.code;
-			const latitude = $coords.latitude;
-			const longitude = $coords.longitude;
-			const accuracy = $coords.accuracy;
-			const response = await addAttendance(email, code, latitude, longitude, accuracy, image);
-			result.set(response);
-			mode.set(Mode.RESULT);
+		if (mode == Mode.ADD_STUDENT) {
+			mode = Mode.LOADING;
+			const newStudent : UserType = {
+				email: email,
+				image: image
+			};
+			const response = await addStudent(newStudent);
+			result = response;
+			mode = Mode.RESULT;
+		} else if (mode == Mode.ADD_ATTENDANCE) {
+			mode = Mode.LOADING;
+			const newAttendance : AttendanceType = {
+				email: email,
+				code: selectedExam!.code,
+				latitude: coords.latitude,
+				longitude: coords.longitude,
+				accuracy: coords.accuracy,
+				image: image
+			};
+			const response = await addAttendance(newAttendance);
+			result = response;
+			mode = Mode.RESULT;
 		} else {
 			console.log('Invalid submit mode');
 		}
@@ -98,11 +100,12 @@
 	};
 
 	onMount(async () => {
-		mode.set(Mode.INIT);
+		mode = Mode.INIT;
+		isFaceDetected = false;
 		await initializeFaceDetector();
 		await setGeolocation();
 		await setExams();
-		mode.set(Mode.DEFAULT);
+		mode = Mode.DEFAULT;
 		return () => {
 			const stream = video.srcObject;
 			if (stream) stream.getTracks().forEach((track) => track.stop());
@@ -112,40 +115,40 @@
 
 <section>
 	<div class='resultScreen'>
-		{#if $mode == Mode.LOADING || $mode == Mode.INIT}
+		{#if mode == Mode.LOADING || mode == Mode.INIT}
 			<LoadRing class='ring' />
-		{:else if $mode == Mode.RESULT}
-			<ResultMessage result={$result} />
-			<button class='button returnButton' on:click={() => {result.set(null); mode.set(Mode.DEFAULT);}}> Regresar </button>
+		{:else if mode == Mode.RESULT}
+			<ResultMessage result={result} />
+			<button class='button returnButton' on:click={() => {result = null; mode = Mode.DEFAULT;}}> Regresar </button>
 		{/if}
 	</div>
-	<div class='detector' style={$mode == Mode.INIT || $mode == Mode.LOADING || $mode == Mode.RESULT ? 'visibility: hidden;' : ''}>
+	<div class='detector' style={mode == Mode.INIT || mode == Mode.LOADING || mode == Mode.RESULT ? 'visibility: hidden;' : ''}>
 		<Styles />
 		<Dropdown direction='down'>
 			<DropdownToggle color='white' caret>
-				{$mode == Mode.ATTENDANCE
-					? $selectedExam.name
-					: $mode == Mode.STUDENT
+				{mode == Mode.ADD_ATTENDANCE
+					? selectedExam!.name
+					: mode == Mode.ADD_STUDENT
 						? 'Registrarse'
 						: 'Elegir acción'}
 			</DropdownToggle>
 			<DropdownMenu>
 				<DropdownItem
-					active={$mode == Mode.STUDENT}
+					active={mode == Mode.ADD_STUDENT}
 					on:click={() => {
-						mode.set(Mode.STUDENT);
+						mode = Mode.ADD_STUDENT;
 					}}
 				>
 					Registrarse
 				</DropdownItem>
 				<DropdownItem divider />
 				<DropdownItem header>Agregar asistencia</DropdownItem>
-				{#each $availableExams as exam}
+				{#each availableExams! as exam}
 					<DropdownItem
-						active={$mode == Mode.ATTENDANCE && $selectedExam === exam}
+						active={mode == Mode.ADD_ATTENDANCE && selectedExam === exam}
 						on:click={() => {
-							selectedExam.set(exam);
-							mode.set(Mode.ATTENDANCE);
+							selectedExam = exam;
+							mode = Mode.ADD_ATTENDANCE;
 						}}
 					>
 						{exam.name}
@@ -159,7 +162,7 @@
 				bind:this={video}
 				autoplay
 				playsinline
-				class= {$isFaceDetected ? 'success' : 'error'}
+				class= {isFaceDetected ? 'success' : 'error'}
 			>
 				<track kind='captions' />
 			</video>
@@ -169,9 +172,9 @@
 			class='button'
 			on:click={handleSubmit}
 			disabled={!(
-				$coords != null &&
-				$isFaceDetected &&
-				($mode == Mode.ATTENDANCE || $mode == Mode.STUDENT)
+				coords != null &&
+				isFaceDetected &&
+				(mode == Mode.ADD_ATTENDANCE || mode == Mode.ADD_STUDENT)
 			)}
 		>
 			Tomar foto

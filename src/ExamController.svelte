@@ -1,4 +1,4 @@
-<script>
+<script lang='ts'>
 	import './styles.css';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -7,63 +7,70 @@
 	import { getExams, addExam, editExam } from './services';
 	import ResultMessage from '../src/ResultMessage.svelte';
 
-	const Mode = {
-		DEFAULT: 0,
-		INIT: 1,
-		LOADING: 2,
-		RESULT: 3,
-		ADD_EXAM: 4,
-		EDIT_EXAM: 5
-	};
+	import type { UserType, ExamType } from '$lib/types/exam.type';
 
-	export let user;
+	import { Mode } from '$lib/types/enums';
 
-	const mode = writable(null);
-	const result = writable(null);
-	const availableExams = writable([]);
-	const selectedExam = writable(null);
+	export let user : UserType;
 
-	let code = null;
-	let name = null;
-	let start = null;
-	let length = null;
-	let margin = null;
+	let mode : Mode | null = null;
+	let result : string | null = null;
+	let availableExams : ExamType[] | null = null;
+	let selectedExam : ExamType | null = null;
 
-	const formatDatetime = (datetime) => {
+	let code : string | null  = null;
+	let name : string | null = null;
+	let start : string | null = null;
+	let length : number | null = null;
+	let margin : number | null = null;
+
+	const formatDatetime = (datetime : string) => {
 		let [datePart, timePart] = datetime.split('T');
 		let [year, month, day] = datePart.split('-');
 		let [hour, minute] = timePart.split(':');
 		let period = 'AM';
-		hour = parseInt(hour, 10);
-		if (hour >= 12) {
+		let _hour = parseInt(hour, 10);
+		if (_hour >= 12) {
 			period = 'PM';
-			if (hour > 12) {
-				hour -= 12;
+			if (_hour > 12) {
+				_hour -= 12;
 			}
-		} else if (hour === 0) {
-			hour = 12;
+		} else if (_hour === 0) {
+			_hour = 12;
 		}
+		hour = _hour.toString();
 		let formattedTime = `${hour}:${minute} ${period}`;
 		let formattedDate = `${day}/${month}/${year}`;
 		return `${formattedDate} ${formattedTime}`;
 	};
 
 	const setExams = async () => {
-		const response = await getExams();
-		availableExams.set(response);
+		availableExams = await getExams();
 	};
 
 	const handleSubmit = async () => {
-		if ($mode == Mode.ADD_EXAM) {
-			mode.set(Mode.LOADING);
-			const response = await addExam(user.email, name, start.replace("T", " "), length, margin);
-			result.set(response);
-			mode.set(Mode.RESULT);
-		} else if ($mode == Mode.EDIT_EXAM) {
-			mode.set(Mode.LOADING);
-			const response = await editExam(user.email, code, name, start.replace("T", " "), length, margin);
-			result.set(response);
-			mode.set(Mode.RESULT);
+		if (mode == Mode.ADD_EXAM) {
+			mode = Mode.LOADING;
+			const newExam : ExamType = {
+				code: '',
+				name: name!,
+				start: start!,
+				length: length!,
+				margin: margin!
+			};
+			result = await addExam(newExam);
+			mode = Mode.RESULT;
+		} else if (mode == Mode.EDIT_EXAM) {
+			mode = Mode.LOADING;
+			const editedExam : ExamType = {
+				code: code!,
+				name: name!,
+				start: start!,
+				length: length!,
+				margin: margin!
+			};
+			result = await editExam(editedExam);
+			mode = Mode.RESULT;
 		} else {
 			console.log('Invalid submit mode');
 		}
@@ -71,29 +78,30 @@
 	};
 
 	onMount(async () => {
-		mode.set(Mode.INIT);
+		mode = Mode.INIT;
 		await setExams();
-		mode.set(Mode.DEFAULT);
+		mode = Mode.DEFAULT;
 		return () => {};
 	});
 </script>
 
 <section>
-	<div class="resultScreen">
-		{#if $mode == Mode.LOADING || $mode == Mode.INIT}
-			<LoadRing class="ring" />
-		{:else if $mode == Mode.RESULT}
-			<ResultMessage result={$result} />
+	<div class='resultScreen'>
+		{#if mode == Mode.LOADING || mode == Mode.INIT}
+			<LoadRing class='ring' />
+		{:else if mode == Mode.RESULT}
+			<ResultMessage result={result} />
 			<button
-				class="button returnButton"
+				class='button returnButton'
 				on:click={() => {
-					result.set(null);
+					result = null;
+					selectedExam = null;
 					code = null;
 					name = null;
 					start = null;
 					length = null;
 					margin = null;
-					mode.set(Mode.DEFAULT);
+					mode = Mode.DEFAULT;
 				}}
 			>
 				Regresar
@@ -101,74 +109,74 @@
 		{/if}
 	</div>
 	<div
-		class="exam"
-		style={$mode == Mode.INIT || $mode == Mode.LOADING || $mode == Mode.RESULT
+		class='exam'
+		style={mode == Mode.INIT || mode == Mode.LOADING || mode == Mode.RESULT
 			? 'visibility: hidden;'
 			: ''}
 	>
 		<Styles />
 		<Dropdown direction='down' class='dropdown'>
 			<DropdownToggle color='white' caret>
-				{$mode == Mode.DEFAULT ? 'Elegir acción' : $mode == Mode.EDIT_EXAM ? $selectedExam.name : $mode == Mode.ADD_EXAM ? 'Nuevo examen' : ''}
+				{mode == Mode.DEFAULT ? 'Elegir acción' : mode == Mode.EDIT_EXAM ? selectedExam?.name : mode == Mode.ADD_EXAM ? 'Nuevo examen' : ''}
 			</DropdownToggle>
 			<DropdownMenu>
 				<DropdownItem
-					active={$mode == Mode.ADD_EXAM}
+					active={mode == Mode.ADD_EXAM}
 					on:click={() => {
-						selectedExam.set(null);
+						selectedExam = null;
 						code = null;
 						name = null;
 						start = null;
 						length = null;
 						margin = null;
-						mode.set(Mode.ADD_EXAM);
+						mode = Mode.ADD_EXAM;
 					}}
 				>
 					Agregar nuevo examen
 				</DropdownItem>
 				<DropdownItem divider />
 				<DropdownItem header>Editar examen</DropdownItem>
-				{#each $availableExams as exam}
+				{#each availableExams ?? [] as availableExam : ExamType}
 					<DropdownItem
-						active={$mode == Mode.EDIT_EXAM && $selectedExam === exam}
+						active={mode == Mode.EDIT_EXAM && selectedExam === availableExam}
 						on:click={() => {
-							selectedExam.set(exam);
-							code = exam.code;
-							name = exam.name;
-							start = exam.start.replace(" ", "T");
-							length = exam.length;
-							margin = exam.margin;
-							mode.set(Mode.EDIT_EXAM);
+							selectedExam = availableExam as ExamType;
+							code = selectedExam.code;
+							name = selectedExam.name;
+							start = selectedExam.start.replace(' ', 'T');
+							length = selectedExam.length;
+							margin = selectedExam.margin;
+							mode = Mode.EDIT_EXAM;
 						}}
 					>
-						{exam.name}
+						{availableExam?.name}
 					</DropdownItem>
 				{/each}
 			</DropdownMenu>
 		</Dropdown>
 
-		{#if $mode != Mode.DEFAULT}
-			<Input class="input name" type="text" placeholder="Ingresar nombre" bind:value={name} />
-			<div class="datetimeContainer">
-				<Input class="input datetime calendar" type="datetime-local" placeholder="Comienzo" bind:value={start} />		
-				<p class="input datetime">{start ? formatDatetime(start) : "Ingresar fecha y hora"}</p>
+		{#if mode != Mode.DEFAULT}
+			<Input class='input name' type='text' placeholder='Ingresar nombre' bind:value={name} />
+			<div class='datetimeContainer'>
+				<Input class='input datetime calendar' type='datetime-local' placeholder='Comienzo' bind:value={start} />		
+				<p class='input datetime'>{start ? formatDatetime(start) : 'Ingresar fecha y hora'}</p>
 			</div>
-			<div class="lengthContainer">
-				<p class="input length">Duración: </p>
-				<Input class="input length lengthInput" type="number" placeholder="------" min="0" bind:value={length} />
-				<p class="input length">minutos</p>
+			<div class='lengthContainer'>
+				<p class='input length'>Duración: </p>
+				<Input class='input length lengthInput' type='number' placeholder='------' min='0' bind:value={length} />
+				<p class='input length'>minutos</p>
 			</div>
-			<div class="marginContainer">
-				<p class="input margin">Margen: </p>
-				<Input class="input margin marginInput" type="number" placeholder="------" min="0" bind:value={margin} />
-				<p class="input length">minutos</p>
+			<div class='marginContainer'>
+				<p class='input margin'>Margen: </p>
+				<Input class='input margin marginInput' type='number' placeholder='------' min='0' bind:value={margin} />
+				<p class='input length'>minutos</p>
 			</div>
 			<button
-				class="button examButton"
+				class='button examButton'
 				on:click={handleSubmit}
-				disabled={!(name && start && length && margin) && ($mode != Mode.ADD_EXAM || $mode != Mode.EDIT_EXAM)}
+				disabled={!(name && start && length && margin) && (mode != Mode.ADD_EXAM || mode != Mode.EDIT_EXAM)}
 			>
-				{$mode == Mode.ADD_EXAM ? 'Agregar examen' : $mode == Mode.EDIT_EXAM ? 'Editar examen' : '' }
+				{mode == Mode.ADD_EXAM ? 'Agregar examen' : mode == Mode.EDIT_EXAM ? 'Editar examen' : '' }
 			</button>
 		{/if}
 	</div>
