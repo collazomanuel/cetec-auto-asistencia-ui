@@ -3,10 +3,10 @@ import { sendGetRequest, sendPostRequest, sendPutRequest } from './requestQueue'
 
 import type { UserType, ExamType, AttendanceType } from '$lib/types/exam.type';
 
-const getExams = async () => {
+const getExams = async (filter : boolean) => {
 	try {
 		const url = import.meta.env.VITE_API_URL + '/exam';
-		const response = await sendGetRequest(url);
+		const response = await sendGetRequest(url, { filter: filter });
 		return response;
 	} catch (error) {
 		console.error(error);

@@ -17,8 +17,8 @@ function queueRequest(fn) {
 	requestQueue.push(fn);
 }
 
-async function sendGetRequest(url) {
-	const axiosRequest = () => axios.get(url);
+async function sendGetRequest(url, params) {
+	const axiosRequest = () => axios.get(url, { params: params ?? {} });
 	if (typeof window !== 'undefined' && get(isConnected))
 		return performRequest(axiosRequest);
 	else queueRequest(axiosRequest);
@@ -46,6 +46,6 @@ function retryQueuedRequests() {
 }
 
 if (typeof window !== 'undefined')
-  window.addEventListener('online', retryQueuedRequests);
+	window.addEventListener('online', retryQueuedRequests);
 
 export { sendGetRequest, sendPostRequest, sendPutRequest };

@@ -59,7 +59,7 @@
 	};
 
 	const setExams = async () => {
-		availableExams = await getExams();
+		availableExams = await getExams(true);
 	};
 
 	const handleSubmit = async () => {
