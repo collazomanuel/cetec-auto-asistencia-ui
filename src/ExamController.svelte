@@ -45,7 +45,7 @@
 	};
 
 	const setExams = async () => {
-		availableExams = await getExams(false);
+		availableExams = await getExams(false, user.email);
 	};
 
 	const handleSubmit = async () => {
@@ -58,7 +58,7 @@
 				length: length!,
 				margin: margin!
 			};
-			result = await addExam(newExam);
+			result = await addExam(newExam, user.email);
 			mode = Mode.RESULT;
 		} else if (mode == Mode.EDIT_EXAM) {
 			mode = Mode.LOADING;
@@ -69,7 +69,7 @@
 				length: length!,
 				margin: margin!
 			};
-			result = await editExam(editedExam);
+			result = await editExam(editedExam, user.email);
 			mode = Mode.RESULT;
 		} else {
 			console.log('Invalid submit mode');

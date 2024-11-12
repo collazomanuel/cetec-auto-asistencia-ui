@@ -59,7 +59,7 @@
 	};
 
 	const setExams = async () => {
-		availableExams = await getExams(true);
+		availableExams = await getExams(true, user.email);
 	};
 
 	const handleSubmit = async () => {
@@ -71,7 +71,7 @@
 				email: email,
 				image: image
 			};
-			const response = await addStudent(newStudent);
+			const response = await addStudent(newStudent, user.email);
 			result = response;
 			mode = Mode.RESULT;
 		} else if (mode == Mode.ADD_ATTENDANCE) {
@@ -84,7 +84,7 @@
 				accuracy: coords.accuracy,
 				image: image
 			};
-			const response = await addAttendance(newAttendance);
+			const response = await addAttendance(newAttendance, user.email);
 			result = response;
 			mode = Mode.RESULT;
 		} else {

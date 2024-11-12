@@ -15,10 +15,12 @@
 			case 'attendance_valid':
 			case 'registration_valid':
 				return 'success';
+			case 'attendance_error_auth':
 			case 'attendance_error_email':
 			case 'attendance_error_location':
 			case 'attendance_error_face':
-			case 'registration_valid':
+			case 'student_error_auth':
+			case 'exam_error_auth':
 			case 'registration_error_email':
 				return 'error';
 			default:
@@ -50,6 +52,10 @@
 				return 'Error: Usuario sin permisos';
 			case 'exam_error_code':
 				return 'Error: Examen no reconocido';
+			case 'exam_error_auth':
+			case 'attendance_error_auth':
+			case 'student_error_auth':
+				return 'Error: Acceso denegado';
 			default:
 				return 'Error de comunicación con el servicio, intente nuevamente más tarde';
 		}

@@ -24,15 +24,15 @@ async function sendGetRequest(url, params) {
 	else queueRequest(axiosRequest);
 }
 
-async function sendPostRequest(url, body) {
-	const axiosRequest = () => axios.post(url, body);
+async function sendPostRequest(url, body, auth) {
+	const axiosRequest = () => axios.post(url, body, {headers: {'Authorization': `${auth}`}});
 	if (typeof window !== 'undefined' && get(isConnected))
 		return performRequest(axiosRequest);
 	else queueRequest(axiosRequest);
 }
 
-async function sendPutRequest(url, body) {
-	const axiosRequest = () => axios.put(url, body);
+async function sendPutRequest(url, body, auth) {
+	const axiosRequest = () => axios.put(url, body, {headers: {'Authorization': `${auth}`}});
 	if (typeof window !== 'undefined' && get(isConnected))
 		return performRequest(axiosRequest);
 	else queueRequest(axiosRequest);
