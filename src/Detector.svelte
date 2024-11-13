@@ -1,4 +1,4 @@
-<script lang='ts'>
+<script lang="ts">
 	import './styles.css';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -12,23 +12,25 @@
 
 	import { Mode } from '$lib/types/enums';
 
-	export let user : UserType;
+	export let user: UserType;
 
-	let video : any;
-	let canvas : any;
-	let faceDetector : any;
-	
-	let mode : Mode | null = null;
-	let result : string | null = null;
-	let availableExams : ExamType[] | null = null;
-	let selectedExam : ExamType | null = null;
+	let video: any;
+	let canvas: any;
+	let faceDetector: any;
 
-	let isFaceDetected : boolean | null = null;
-	let coords : any = null;
+	let mode: Mode | null = null;
+	let result: string | null = null;
+	let availableExams: ExamType[] | null = null;
+	let selectedExam: ExamType | null = null;
+
+	let isFaceDetected: boolean | null = null;
+	let coords: any = null;
 
 	const initializeFaceDetector = async () => {
-		const filesetResolverBasePath = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm';
-		const fdModelAssetPath = 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite';
+		const filesetResolverBasePath =
+			'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm';
+		const fdModelAssetPath =
+			'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite';
 		const fdDelegate = 'GPU';
 		const fdRunningMode = 'VIDEO';
 		const vision = await FilesetResolver.forVisionTasks(filesetResolverBasePath);
@@ -52,14 +54,18 @@
 
 	const setGeolocation = async () => {
 		navigator?.geolocation.getCurrentPosition(
-			(pos) => { coords = pos.coords },
-			() => { console.log('Error retrieving location') },
+			(pos) => {
+				coords = pos.coords;
+			},
+			() => {
+				console.log('Error retrieving location');
+			},
 			{ enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
 		);
 	};
 
 	const setExams = async () => {
-		availableExams = await getExams(true, user.email);
+		availableExams = await getExams(true);
 	};
 
 	const handleSubmit = async () => {
@@ -67,7 +73,7 @@
 		const image = await capturePhoto();
 		if (mode == Mode.ADD_STUDENT) {
 			mode = Mode.LOADING;
-			const newStudent : UserType = {
+			const newStudent: UserType = {
 				email: email,
 				image: image
 			};
@@ -76,7 +82,7 @@
 			mode = Mode.RESULT;
 		} else if (mode == Mode.ADD_ATTENDANCE) {
 			mode = Mode.LOADING;
-			const newAttendance : AttendanceType = {
+			const newAttendance: AttendanceType = {
 				email: email,
 				code: selectedExam!.code,
 				latitude: coords.latitude,
@@ -107,25 +113,37 @@
 		await setExams();
 		mode = Mode.DEFAULT;
 		return () => {
-			const stream = video.srcObject;
-			if (stream) stream.getTracks().forEach((track) => track.stop());
+			video.srcObject?.getTracks().forEach((track) => track.stop());
 		};
 	});
 </script>
 
 <section>
-	<div class='resultScreen'>
+	<div class="resultScreen">
 		{#if mode == Mode.LOADING || mode == Mode.INIT}
-			<LoadRing class='ring' />
+			<LoadRing class="ring" />
 		{:else if mode == Mode.RESULT}
-			<ResultMessage result={result} />
-			<button class='button returnButton' on:click={() => {result = null; mode = Mode.DEFAULT;}}> Regresar </button>
+			<ResultMessage {result} />
+			<button
+				class="button returnButton"
+				on:click={() => {
+					result = null;
+					mode = Mode.DEFAULT;
+				}}
+			>
+				Regresar
+			</button>
 		{/if}
 	</div>
-	<div class='detector' style={mode == Mode.INIT || mode == Mode.LOADING || mode == Mode.RESULT ? 'visibility: hidden;' : ''}>
+	<div
+		class="detector"
+		style={mode == Mode.INIT || mode == Mode.LOADING || mode == Mode.RESULT
+			? 'visibility: hidden;'
+			: ''}
+	>
 		<Styles />
-		<Dropdown direction='down'>
-			<DropdownToggle color='white' caret>
+		<Dropdown direction="down">
+			<DropdownToggle color="white" caret>
 				{mode == Mode.ADD_ATTENDANCE
 					? selectedExam!.name
 					: mode == Mode.ADD_STUDENT
@@ -157,19 +175,14 @@
 			</DropdownMenu>
 		</Dropdown>
 
-		<div class='camera'>
-			<video
-				bind:this={video}
-				autoplay
-				playsinline
-				class= {isFaceDetected ? 'success' : 'error'}
-			>
-				<track kind='captions' />
+		<div class="camera">
+			<video bind:this={video} autoplay playsinline class={isFaceDetected ? 'success' : 'error'}>
+				<track kind="captions" />
 			</video>
 			<canvas bind:this={canvas}></canvas>
 		</div>
 		<button
-			class='button'
+			class="button"
 			on:click={handleSubmit}
 			disabled={!(
 				coords != null &&

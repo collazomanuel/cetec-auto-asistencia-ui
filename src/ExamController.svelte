@@ -1,4 +1,4 @@
-<script lang='ts'>
+<script lang="ts">
 	import './styles.css';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -11,20 +11,20 @@
 
 	import { Mode } from '$lib/types/enums';
 
-	export let user : UserType;
+	export let user: UserType;
 
-	let mode : Mode | null = null;
-	let result : string | null = null;
-	let availableExams : ExamType[] | null = null;
-	let selectedExam : ExamType | null = null;
+	let mode: Mode | null = null;
+	let result: string | null = null;
+	let availableExams: ExamType[] | null = null;
+	let selectedExam: ExamType | null = null;
 
-	let code : string | null  = null;
-	let name : string | null = null;
-	let start : string | null = null;
-	let length : number | null = null;
-	let margin : number | null = null;
+	let code: string | null = null;
+	let name: string | null = null;
+	let start: string | null = null;
+	let length: number | null = null;
+	let margin: number | null = null;
 
-	const formatDatetime = (datetime : string) => {
+	const formatDatetime = (datetime: string) => {
 		let [datePart, timePart] = datetime.split('T');
 		let [year, month, day] = datePart.split('-');
 		let [hour, minute] = timePart.split(':');
@@ -45,13 +45,13 @@
 	};
 
 	const setExams = async () => {
-		availableExams = await getExams(false, user.email);
+		availableExams = await getExams(false);
 	};
 
 	const handleSubmit = async () => {
 		if (mode == Mode.ADD_EXAM) {
 			mode = Mode.LOADING;
-			const newExam : ExamType = {
+			const newExam: ExamType = {
 				code: '',
 				name: name!,
 				start: start!,
@@ -62,7 +62,7 @@
 			mode = Mode.RESULT;
 		} else if (mode == Mode.EDIT_EXAM) {
 			mode = Mode.LOADING;
-			const editedExam : ExamType = {
+			const editedExam: ExamType = {
 				code: code!,
 				name: name!,
 				start: start!,
@@ -86,13 +86,13 @@
 </script>
 
 <section>
-	<div class='resultScreen'>
+	<div class="resultScreen">
 		{#if mode == Mode.LOADING || mode == Mode.INIT}
-			<LoadRing class='ring' />
+			<LoadRing class="ring" />
 		{:else if mode == Mode.RESULT}
-			<ResultMessage result={result} />
+			<ResultMessage {result} />
 			<button
-				class='button returnButton'
+				class="button returnButton"
 				on:click={() => {
 					result = null;
 					selectedExam = null;
@@ -109,15 +109,21 @@
 		{/if}
 	</div>
 	<div
-		class='exam'
+		class="exam"
 		style={mode == Mode.INIT || mode == Mode.LOADING || mode == Mode.RESULT
 			? 'visibility: hidden;'
 			: ''}
 	>
 		<Styles />
-		<Dropdown direction='down' class='dropdown'>
-			<DropdownToggle color='white' caret>
-				{mode == Mode.DEFAULT ? 'Elegir acción' : mode == Mode.EDIT_EXAM ? selectedExam?.name : mode == Mode.ADD_EXAM ? 'Nuevo examen' : ''}
+		<Dropdown direction="down" class="dropdown">
+			<DropdownToggle color="white" caret>
+				{mode == Mode.DEFAULT
+					? 'Elegir acción'
+					: mode == Mode.EDIT_EXAM
+						? selectedExam?.name
+						: mode == Mode.ADD_EXAM
+							? 'Nuevo examen'
+							: ''}
 			</DropdownToggle>
 			<DropdownMenu>
 				<DropdownItem
@@ -136,7 +142,7 @@
 				</DropdownItem>
 				<DropdownItem divider />
 				<DropdownItem header>Editar examen</DropdownItem>
-				{#each availableExams ?? [] as availableExam : ExamType}
+				{#each availableExams ?? [] as availableExam:  : ExamType}
 					<DropdownItem
 						active={mode == Mode.EDIT_EXAM && selectedExam === availableExam}
 						on:click={() => {
@@ -156,27 +162,45 @@
 		</Dropdown>
 
 		{#if mode != Mode.DEFAULT}
-			<Input class='input name' type='text' placeholder='Ingresar nombre' bind:value={name} />
-			<div class='datetimeContainer'>
-				<Input class='input datetime calendar' type='datetime-local' placeholder='Comienzo' bind:value={start} />		
-				<p class='input datetime'>{start ? formatDatetime(start) : 'Ingresar fecha y hora'}</p>
+			<Input class="input name" type="text" placeholder="Ingresar nombre" bind:value={name} />
+			<div class="datetimeContainer">
+				<Input
+					class="input datetime calendar"
+					type="datetime-local"
+					placeholder="Comienzo"
+					bind:value={start}
+				/>
+				<p class="input datetime">{start ? formatDatetime(start) : 'Ingresar fecha y hora'}</p>
 			</div>
-			<div class='lengthContainer'>
-				<p class='input length'>Duración: </p>
-				<Input class='input length lengthInput' type='number' placeholder='------' min='0' bind:value={length} />
-				<p class='input length'>minutos</p>
+			<div class="lengthContainer">
+				<p class="input length">Duración:</p>
+				<Input
+					class="input length lengthInput"
+					type="number"
+					placeholder="------"
+					min="0"
+					bind:value={length}
+				/>
+				<p class="input length">minutos</p>
 			</div>
-			<div class='marginContainer'>
-				<p class='input margin'>Margen: </p>
-				<Input class='input margin marginInput' type='number' placeholder='------' min='0' bind:value={margin} />
-				<p class='input length'>minutos</p>
+			<div class="marginContainer">
+				<p class="input margin">Margen:</p>
+				<Input
+					class="input margin marginInput"
+					type="number"
+					placeholder="------"
+					min="0"
+					bind:value={margin}
+				/>
+				<p class="input length">minutos</p>
 			</div>
 			<button
-				class='button examButton'
+				class="button examButton"
 				on:click={handleSubmit}
-				disabled={!(name && start && length && margin) && (mode != Mode.ADD_EXAM || mode != Mode.EDIT_EXAM)}
+				disabled={!(name && start && length && margin) &&
+					(mode != Mode.ADD_EXAM || mode != Mode.EDIT_EXAM)}
 			>
-				{mode == Mode.ADD_EXAM ? 'Agregar examen' : mode == Mode.EDIT_EXAM ? 'Editar examen' : '' }
+				{mode == Mode.ADD_EXAM ? 'Agregar examen' : mode == Mode.EDIT_EXAM ? 'Editar examen' : ''}
 			</button>
 		{/if}
 	</div>
