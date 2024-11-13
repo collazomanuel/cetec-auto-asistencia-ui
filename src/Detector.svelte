@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang='ts'>
 	import './styles.css';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -119,13 +119,13 @@
 </script>
 
 <section>
-	<div class="resultScreen">
+	<div class='resultScreen'>
 		{#if mode == Mode.LOADING || mode == Mode.INIT}
-			<LoadRing class="ring" />
+			<LoadRing class='ring' />
 		{:else if mode == Mode.RESULT}
 			<ResultMessage {result} />
 			<button
-				class="button returnButton"
+				class='button returnButton'
 				on:click={() => {
 					result = null;
 					mode = Mode.DEFAULT;
@@ -136,14 +136,14 @@
 		{/if}
 	</div>
 	<div
-		class="detector"
+		class='detector'
 		style={mode == Mode.INIT || mode == Mode.LOADING || mode == Mode.RESULT
 			? 'visibility: hidden;'
 			: ''}
 	>
 		<Styles />
-		<Dropdown direction="down">
-			<DropdownToggle color="white" caret>
+		<Dropdown direction='down'>
+			<DropdownToggle color='white' caret>
 				{mode == Mode.ADD_ATTENDANCE
 					? selectedExam!.name
 					: mode == Mode.ADD_STUDENT
@@ -175,14 +175,14 @@
 			</DropdownMenu>
 		</Dropdown>
 
-		<div class="camera">
+		<div class='camera'>
 			<video bind:this={video} autoplay playsinline class={isFaceDetected ? 'success' : 'error'}>
-				<track kind="captions" />
+				<track kind='captions' />
 			</video>
 			<canvas bind:this={canvas}></canvas>
 		</div>
 		<button
-			class="button"
+			class='button'
 			on:click={handleSubmit}
 			disabled={!(
 				coords != null &&
