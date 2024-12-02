@@ -13,6 +13,7 @@
 	import { Mode } from '$lib/types/enums';
 
 	export let user: UserType;
+	export let userToken: string;
 
 	let video: any;
 	let canvas: any;
@@ -77,7 +78,7 @@
 				email: email,
 				image: image
 			};
-			const response = await addStudent(newStudent, user.email);
+			const response = await addStudent(newStudent, userToken);
 			result = response;
 			mode = Mode.RESULT;
 		} else if (mode == Mode.ADD_ATTENDANCE) {
@@ -90,7 +91,7 @@
 				accuracy: coords.accuracy,
 				image: image
 			};
-			const response = await addAttendance(newAttendance, user.email);
+			const response = await addAttendance(newAttendance, userToken);
 			result = response;
 			mode = Mode.RESULT;
 		} else {

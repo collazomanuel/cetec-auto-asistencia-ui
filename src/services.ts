@@ -13,44 +13,44 @@ const getExams = async (filter : boolean) => {
 	}
 };
 
-const addExam = async (exam : ExamType, auth : string) => {
+const addExam = async (exam : ExamType, userToken : string) => {
 	try {
 		const url = import.meta.env.VITE_API_URL + '/exam';
 		const body = { code: '', name: exam?.name, start: exam?.start, length: exam?.length, margin: exam?.margin };
-		const response = await sendPostRequest(url, body, auth);
+		const response = await sendPostRequest(url, body, userToken);
 		return response;
 	} catch (error) {
 		console.error(error);
 	}
 };
 
-const editExam = async (exam : ExamType, auth : string) => {
+const editExam = async (exam : ExamType, userToken : string) => {
 	try {
 		const url = import.meta.env.VITE_API_URL + '/exam';
 		const body = { code: exam?.code, name: exam?.name, start: exam?.start, length: exam?.length, margin: exam?.margin };
-		const response = await sendPutRequest(url, body, auth);
+		const response = await sendPutRequest(url, body, userToken);
 		return response;
 	} catch (error) {
 		console.error(error);
 	}
 };
 
-const addStudent = async (user : UserType, auth : string) => {
+const addStudent = async (user : UserType, userToken : string) => {
 	try {
 		const url = import.meta.env.VITE_API_URL + '/student';
 		const body = { email: user?.email, image: user?.image };
-		const response = await sendPostRequest(url, body, auth);
+		const response = await sendPostRequest(url, body, userToken);
 		return response;
 	} catch (error) {
 		console.error(error);
 	}
 };
 
-const addAttendance = async (attendance : AttendanceType, auth : string) => {
+const addAttendance = async (attendance : AttendanceType, userToken : string) => {
 	try {
 		const url = import.meta.env.VITE_API_URL + '/attendance';
 		const body = { email: attendance?.email, code: attendance?.code, latitude: attendance?.latitude, longitude: attendance?.longitude, accuracy: attendance?.accuracy, image: attendance?.image };
-		const response = await sendPostRequest(url, body, auth);
+		const response = await sendPostRequest(url, body, userToken);
 		return response;
 	} catch (error) {
 		console.error(error);

@@ -11,7 +11,7 @@
 
 	import { Mode } from '$lib/types/enums';
 
-	export let user: UserType;
+	export let userToken: string;
 
 	let mode: Mode | null = null;
 	let result: string | null = null;
@@ -58,7 +58,7 @@
 				length: length!,
 				margin: margin!
 			};
-			result = await addExam(newExam, user.email);
+			result = await addExam(newExam, userToken);
 			mode = Mode.RESULT;
 		} else if (mode == Mode.EDIT_EXAM) {
 			mode = Mode.LOADING;
@@ -69,7 +69,7 @@
 				length: length!,
 				margin: margin!
 			};
-			result = await editExam(editedExam, user.email);
+			result = await editExam(editedExam, userToken);
 			mode = Mode.RESULT;
 		} else {
 			console.log('Invalid submit mode');
@@ -142,7 +142,7 @@
 				</DropdownItem>
 				<DropdownItem divider />
 				<DropdownItem header>Editar examen</DropdownItem>
-				{#each availableExams ?? [] as availableExam:  : ExamType}
+				{#each availableExams ?? [] as availableExam: ExamType}
 					<DropdownItem
 						active={mode == Mode.EDIT_EXAM && selectedExam === availableExam}
 						on:click={() => {
