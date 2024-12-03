@@ -11,7 +11,6 @@
 	import type { UserType, ExamType } from '$lib/types/exam.type';
 
 	import { Mode } from '$lib/types/enums';
-	import { error } from '@sveltejs/kit';
 
 	export let userToken: string;
 
