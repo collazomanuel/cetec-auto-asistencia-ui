@@ -2,7 +2,6 @@
 	import './styles.css';
 	
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 	import { Styles, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from '@sveltestrap/sveltestrap';
 
 	import { getExams, addExam, editExam } from './services';

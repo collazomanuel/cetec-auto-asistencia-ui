@@ -2,7 +2,6 @@
 	import './styles.css';
 
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 	import { Styles, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from '@sveltestrap/sveltestrap';
 	import { FaceDetector, FilesetResolver, type FaceDetectorOptions } from '@mediapipe/tasks-vision';
 
@@ -11,7 +10,7 @@
 	import LoadingSpinner from '../src/LoadingSpinner.svelte';
 
 	import type { UserType, ExamType, AttendanceType } from '$lib/types/exam.type';
-	
+
 	import { Mode } from '$lib/types/enums';
 
 	export let user: UserType;
