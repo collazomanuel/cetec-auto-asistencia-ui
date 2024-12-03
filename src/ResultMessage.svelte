@@ -1,14 +1,13 @@
-<script>
+<script lang='ts'>
 	import './styles.css';
 	import { onMount } from 'svelte';
 
 	export let result;
 
 	onMount(async () => {
-		return () => {};
 	});
 
-	const getResultClass = (result) => {
+	const getResultClass = (result : string) => {
 		if (result.startsWith('SUCCESS'))
 			return 'success';
 		else if (result.startsWith('ERROR'))
@@ -17,7 +16,7 @@
 			return '';
 	};
 
-	const getResultText = (result) => {
+	const getResultText = (result : string) => {
 		switch (result) {
 			case 'SUCCESS_STUDENT_ADD':
 				return 'Usuario registrado ✓';
