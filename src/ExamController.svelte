@@ -1,15 +1,18 @@
 <script lang='ts'>
 	import './styles.css';
+	
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { LoadRing } from 'svelte-loading-animation';
-	import { Styles, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'sveltestrap';
+	import { Styles, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from '@sveltestrap/sveltestrap';
+
 	import { getExams, addExam, editExam } from './services';
 	import ResultMessage from '../src/ResultMessage.svelte';
+	import LoadingSpinner from '../src/LoadingSpinner.svelte';
 
 	import type { UserType, ExamType } from '$lib/types/exam.type';
 
 	import { Mode } from '$lib/types/enums';
+	import { error } from '@sveltejs/kit';
 
 	export let userToken: string;
 
@@ -45,62 +48,76 @@
 	};
 
 	const setExams = async () => {
-		availableExams = await getExams(false);
+		try {
+			availableExams = await getExams(false);
+		} catch (error) {
+			console.error('Failed to fetch exams: ', error);
+		}
+	};
+
+	const createExamObject = (): ExamType => ({
+		code: mode === Mode.EDIT_EXAM ? code! : '',
+		name: name!,
+		start: start!,
+		length: length!,
+		margin: margin!
+	});
+
+	function fillForm(selectedExam: ExamType) {
+		code = selectedExam.code;
+		name = selectedExam.name;
+		start = selectedExam.start.replace(' ', 'T');
+		length = selectedExam.length;
+		margin = selectedExam.margin;
+	}
+
+	const resetForm = () => {
+		selectedExam = null;
+		code = null;
+		name = null;
+		start = null;
+		length = null;
+		margin = null;
 	};
 
 	const handleSubmit = async () => {
-		if (mode == Mode.ADD_EXAM) {
+		try {
+			const exam = createExamObject();
+			const selectedMode = mode;
 			mode = Mode.LOADING;
-			const newExam: ExamType = {
-				code: '',
-				name: name!,
-				start: start!,
-				length: length!,
-				margin: margin!
-			};
-			result = await addExam(newExam, userToken);
+			if (selectedMode === Mode.ADD_EXAM)
+				result = await addExam(exam, userToken);
+			else if (selectedMode === Mode.EDIT_EXAM)
+				result = await editExam(exam, userToken);
+			else
+				throw new Error('Invalid submit mode');
 			mode = Mode.RESULT;
-		} else if (mode == Mode.EDIT_EXAM) {
-			mode = Mode.LOADING;
-			const editedExam: ExamType = {
-				code: code!,
-				name: name!,
-				start: start!,
-				length: length!,
-				margin: margin!
-			};
-			result = await editExam(editedExam, userToken);
-			mode = Mode.RESULT;
-		} else {
-			console.log('Invalid submit mode');
+		} catch (error) {
+			console.error('Failed to submit exam:', error);
+		} finally {
+			await setExams();
 		}
-		await setExams();
 	};
 
 	onMount(async () => {
 		mode = Mode.INIT;
 		await setExams();
 		mode = Mode.DEFAULT;
-		return () => {};
 	});
+
 </script>
 
 <section>
 	<div class='resultScreen'>
 		{#if mode == Mode.LOADING || mode == Mode.INIT}
-			<LoadRing class='ring' />
+			<LoadingSpinner />
 		{:else if mode == Mode.RESULT}
 			<ResultMessage {result} />
 			<button
 				class='button returnButton'
 				on:click={() => {
+					resetForm();
 					result = null;
-					selectedExam = null;
-					code = null;
-					name = null;
-					start = null;
-					length = null;
-					margin = null;
 					mode = Mode.DEFAULT;
 				}}
 			>
@@ -129,12 +146,7 @@
 				<DropdownItem
 					active={mode == Mode.ADD_EXAM}
 					on:click={() => {
-						selectedExam = null;
-						code = null;
-						name = null;
-						start = null;
-						length = null;
-						margin = null;
+						resetForm();
 						mode = Mode.ADD_EXAM;
 					}}
 				>
@@ -147,11 +159,7 @@
 						active={mode == Mode.EDIT_EXAM && selectedExam === availableExam}
 						on:click={() => {
 							selectedExam = availableExam as ExamType;
-							code = selectedExam.code;
-							name = selectedExam.name;
-							start = selectedExam.start.replace(' ', 'T');
-							length = selectedExam.length;
-							margin = selectedExam.margin;
+							fillForm(selectedExam);
 							mode = Mode.EDIT_EXAM;
 						}}
 					>
@@ -198,7 +206,7 @@
 				class='button examButton'
 				on:click={handleSubmit}
 				disabled={!(name && start && length && margin) &&
-					(mode != Mode.ADD_EXAM || mode != Mode.EDIT_EXAM)}
+					!(mode == Mode.ADD_EXAM || mode == Mode.EDIT_EXAM)}
 			>
 				{mode == Mode.ADD_EXAM ? 'Agregar examen' : mode == Mode.EDIT_EXAM ? 'Editar examen' : ''}
 			</button>

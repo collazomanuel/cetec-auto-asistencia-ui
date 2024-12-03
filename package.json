@@ -32,8 +32,7 @@
 		"@auth/core": "^0.28.2",
 		"@auth/sveltekit": "^0.14.2",
 		"@mediapipe/tasks-vision": "^0.10.9",
-		"axios": "^1.6.7",
-		"svelte-loading-animation": "^0.0.1",
-		"sveltestrap": "^5.11.3"
+		"@sveltestrap/sveltestrap": "^6.2.7",
+		"axios": "^1.6.7"
 	}
 }

@@ -84,10 +84,6 @@ canvas {
   margin: 4vh;
 }
 
-.ring {
-  filter: invert(35%) sepia(44%) saturate(5705%) hue-rotate(179deg) brightness(100%) contrast(100%);
-}
-
 .exam {
   margin: 10vh;
 }
