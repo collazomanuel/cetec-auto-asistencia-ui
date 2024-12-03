@@ -35,7 +35,7 @@
 		const fdDelegate = 'GPU';
 		const fdRunningMode = 'VIDEO';
 		const vision = await FilesetResolver.forVisionTasks(filesetResolverBasePath);
-		const faceDetectorOptions : FaceDetectorOptions = {
+		const faceDetectorOptions: FaceDetectorOptions = {
 			baseOptions: { modelAssetPath: fdModelAssetPath, delegate: fdDelegate },
 			runningMode: fdRunningMode
 		};
