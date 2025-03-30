@@ -63,12 +63,12 @@
 	};
 
 	const predictWebcam = async () => {
-		if (video && video.readyState == 4) {
+		if (video && video.readyState === 4) {
 			const detections = await faceDetector!.detectForVideo(
 				video,
 				performance.now()
 			).detections;
-			isFaceDetected = detections.length == 1;
+			isFaceDetected = detections.length === 1;
 		}
 		window.requestAnimationFrame(predictWebcam);
 	};
@@ -86,7 +86,8 @@
 	};
 
 	const setExams = async () => {
-		availableExams = await getExams(true);
+		const exams = await getExams(true);
+		availableExams = exams ?? null; // Ensure null is assigned if undefined
 	};
 
 	const createStudentObject = (): UserType => ({
@@ -97,9 +98,9 @@
 	const createAttendanceObject = (): AttendanceType => ({
 		email: user.email,
 		code: selectedExam!.code,
-		latitude: coords.latitude,
-		longitude: coords.longitude,
-		accuracy: coords.accuracy,
+		latitude: coords!.latitude, // Add non-null assertion
+		longitude: coords!.longitude, // Add non-null assertion
+		accuracy: coords!.accuracy, // Add non-null assertion
 		image: image!
 	});
 
@@ -124,9 +125,10 @@
 	};
 
 	const capturePhoto = async () => {
+		if (!canvas || !video) return; // Add null checks
 		canvas.width = video.videoWidth;
 		canvas.height = video.videoHeight;
-		canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+		canvas.getContext('2d')!.drawImage(video, 0, 0, canvas.width, canvas.height); // Add non-null assertion
 		image = canvas.toDataURL();
 	};
 
@@ -141,9 +143,10 @@
 		};
 		initialize();
 		return () => {
-			video?.srcObject
-				?.getTracks()
-				.forEach((track: MediaStreamTrack) => track.stop());
+			video?.srcObject &&
+				(video.srcObject as MediaStream)
+					.getTracks()
+					.forEach((track: MediaStreamTrack) => track.stop()); // Add type assertion
 		};
 	});
 </script>
