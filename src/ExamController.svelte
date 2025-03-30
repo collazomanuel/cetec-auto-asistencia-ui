@@ -8,7 +8,7 @@
 	import ResultMessage from '../src/ResultMessage.svelte';
 	import LoadingSpinner from '../src/LoadingSpinner.svelte';
 
-	import type { UserType, ExamType } from '$lib/types/exam.type';
+	import type { ExamType } from '$lib/types';
 
 	import { Mode } from '$lib/types/enums';
 

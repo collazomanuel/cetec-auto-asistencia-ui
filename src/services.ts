@@ -1,7 +1,7 @@
 
 import { sendGetRequest, sendPostRequest, sendPutRequest } from './requestQueue';
 
-import type { UserType, ExamType, AttendanceType } from '$lib/types/exam.type';
+import type { UserType, ExamType, AttendanceType } from '$lib/types';
 
 const getExams = async (filter: boolean) => {
 	try {
