@@ -7,7 +7,7 @@
 
 <div class="app">
 	{#if $page.data.session}
-		<ExamController userToken={$page.data.session?.access_token} />
+		<ExamController userToken={$page.data.session.access_token ?? ''} />
 	{:else}
 		<button class="button" on:click={() => signIn('google')}>
 			Iniciar sesión con Google
