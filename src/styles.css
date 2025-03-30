@@ -65,6 +65,13 @@ canvas {
 	cursor: not-allowed;
 }
 
+.logout {
+	font-size: 2vh;
+	background-color: var(--clr-5);
+	padding: 10px 16px;
+	margin: 0vh;
+}
+
 .resultScreen {
 	position: absolute;
 	top: 50%;

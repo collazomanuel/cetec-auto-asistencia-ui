@@ -1,7 +1,7 @@
 <script>
 	import '../styles.css';
 	import Detector from '../Detector.svelte';
-	import { signIn } from '@auth/sveltekit/client';
+	import { signIn, signOut } from '@auth/sveltekit/client';
 	import { page } from '$app/stores';
 </script>
 
@@ -11,6 +11,9 @@
 			user={$page.data.session?.user}
 			userToken={$page.data.session?.access_token}
 		/>
+		<button class="button" on:click={() => signOut()}>
+			Cerrar sesión
+		</button>
 	{:else}
 		<button class="button" on:click={() => signIn('google')}>
 			Iniciar sesión con Google
