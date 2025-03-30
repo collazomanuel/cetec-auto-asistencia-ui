@@ -2,9 +2,9 @@ import axios, { AxiosResponse } from 'axios';
 import { get } from 'svelte/store';
 import { isConnected } from './stores';
 
-const requestQueue: Array<() => Promise<AxiosResponse<any>>> = [];
+const requestQueue: Array<() => Promise<AxiosResponse<unknown>>> = [];
 
-async function performRequest(fn: () => Promise<AxiosResponse<any>>) {
+async function performRequest(fn: () => Promise<AxiosResponse<unknown>>) {
 	try {
 		const response = await fn();
 		return response.data;
@@ -13,12 +13,12 @@ async function performRequest(fn: () => Promise<AxiosResponse<any>>) {
 	}
 }
 
-function queueRequest(fn: () => Promise<AxiosResponse<any>>) {
+function queueRequest(fn: () => Promise<AxiosResponse<unknown>>) {
 	requestQueue.push(fn);
 }
 
 async function sendGetRequest(url: string, params: Record<string, unknown>) {
-	const axiosRequest = () => axios.get(url, { params: params ?? {} });
+	const axiosRequest = () => axios.get<unknown>(url, { params: params ?? {} });
 	if (typeof window !== 'undefined' && get(isConnected))
 		return performRequest(axiosRequest);
 	else queueRequest(axiosRequest);
@@ -30,7 +30,7 @@ async function sendPostRequest(
 	userToken: string
 ) {
 	const axiosRequest = () =>
-		axios.post(url, body, {
+		axios.post<unknown>(url, body, {
 			headers: { Authorization: `Bearer ${userToken}` }
 		});
 	if (typeof window !== 'undefined' && get(isConnected))
@@ -44,7 +44,9 @@ async function sendPutRequest(
 	userToken: string
 ) {
 	const axiosRequest = () =>
-		axios.put(url, body, { headers: { Authorization: `Bearer ${userToken}` } });
+		axios.put<unknown>(url, body, {
+			headers: { Authorization: `Bearer ${userToken}` }
+		});
 	if (typeof window !== 'undefined' && get(isConnected))
 		return performRequest(axiosRequest);
 	else queueRequest(axiosRequest);
