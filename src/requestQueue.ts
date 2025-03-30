@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { get } from 'svelte/store';
 import { isConnected } from './stores';
 
-const requestQueue: any = [];
+const requestQueue: Array<() => Promise<AxiosResponse<any>>> = [];
 
-async function performRequest(fn: any) {
+async function performRequest(fn: () => Promise<AxiosResponse<any>>) {
 	try {
 		const response = await fn();
 		return response.data;
@@ -13,18 +13,22 @@ async function performRequest(fn: any) {
 	}
 }
 
-function queueRequest(fn: any) {
+function queueRequest(fn: () => Promise<AxiosResponse<any>>) {
 	requestQueue.push(fn);
 }
 
-async function sendGetRequest(url: string, params: any) {
+async function sendGetRequest(url: string, params: Record<string, unknown>) {
 	const axiosRequest = () => axios.get(url, { params: params ?? {} });
 	if (typeof window !== 'undefined' && get(isConnected))
 		return performRequest(axiosRequest);
 	else queueRequest(axiosRequest);
 }
 
-async function sendPostRequest(url: string, body: any, userToken: string) {
+async function sendPostRequest(
+	url: string,
+	body: Record<string, unknown>,
+	userToken: string
+) {
 	const axiosRequest = () =>
 		axios.post(url, body, {
 			headers: { Authorization: `Bearer ${userToken}` }
@@ -34,7 +38,11 @@ async function sendPostRequest(url: string, body: any, userToken: string) {
 	else queueRequest(axiosRequest);
 }
 
-async function sendPutRequest(url: string, body: any, userToken: string) {
+async function sendPutRequest(
+	url: string,
+	body: Record<string, unknown>,
+	userToken: string
+) {
 	const axiosRequest = () =>
 		axios.put(url, body, { headers: { Authorization: `Bearer ${userToken}` } });
 	if (typeof window !== 'undefined' && get(isConnected))
@@ -45,7 +53,7 @@ async function sendPutRequest(url: string, body: any, userToken: string) {
 function retryQueuedRequests() {
 	while (requestQueue.length > 0) {
 		const request = requestQueue.shift();
-		performRequest(request);
+		if (request) performRequest(request);
 	}
 }
 

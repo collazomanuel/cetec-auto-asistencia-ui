@@ -26,9 +26,9 @@
 	export let user: UserType;
 	export let userToken: string;
 
-	let video: any;
-	let canvas: any;
-	let faceDetector: any;
+	let video: HTMLVideoElement | null = null;
+	let canvas: HTMLCanvasElement | null = null;
+	let faceDetector: FaceDetector | null = null;
 
 	let mode: Mode | null = null;
 	let result: string | null = null;
@@ -37,7 +37,7 @@
 	let image: string | null = null;
 
 	let isFaceDetected: boolean | null = null;
-	let coords: any = null;
+	let coords: GeolocationCoordinates | null = null;
 
 	const initializeFaceDetector = async () => {
 		const filesetResolverBasePath =
@@ -64,7 +64,7 @@
 
 	const predictWebcam = async () => {
 		if (video && video.readyState == 4) {
-			const detections = await faceDetector.detectForVideo(
+			const detections = await faceDetector!.detectForVideo(
 				video,
 				performance.now()
 			).detections;
@@ -141,7 +141,7 @@
 		};
 		initialize();
 		return () => {
-			video.srcObject
+			video?.srcObject
 				?.getTracks()
 				.forEach((track: MediaStreamTrack) => track.stop());
 		};
