@@ -54,9 +54,11 @@
 
 	const setExams = async () => {
 		try {
-			availableExams = await getExams(false);
+			const exams = await getExams(false);
+			availableExams = exams ?? null; // Assign null if exams is undefined
 		} catch (error) {
 			console.error('Failed to fetch exams: ', error);
+			availableExams = null; // Ensure availableExams is set to null on error
 		}
 	};
 
@@ -71,7 +73,7 @@
 	function fillForm(selectedExam: ExamType) {
 		code = selectedExam.code;
 		name = selectedExam.name;
-		start = selectedExam.start.replace(' ', 'T');
+		start = selectedExam.start ? selectedExam.start.replace(' ', 'T') : null; // Handle undefined case
 		length = selectedExam.length;
 		margin = selectedExam.margin;
 	}
@@ -90,14 +92,17 @@
 			const exam = createExamObject();
 			const selectedMode = mode;
 			mode = Mode.LOADING;
-			if (selectedMode === Mode.ADD_EXAM)
-				result = await addExam(exam, userToken);
-			else if (selectedMode === Mode.EDIT_EXAM)
-				result = await editExam(exam, userToken);
-			else throw new Error('Invalid submit mode');
+			if (selectedMode === Mode.ADD_EXAM) {
+				result = (await addExam(exam, userToken)) ?? null; // Assign null if result is undefined
+			} else if (selectedMode === Mode.EDIT_EXAM) {
+				result = (await editExam(exam, userToken)) ?? null; // Assign null if result is undefined
+			} else {
+				throw new Error('Invalid submit mode');
+			}
 			mode = Mode.RESULT;
 		} catch (error) {
 			console.error('Failed to submit exam:', error);
+			result = null; // Ensure result is set to null on error
 		} finally {
 			await setExams();
 		}
