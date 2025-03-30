@@ -32,19 +32,19 @@ module.exports = {
 		'svelte/no-unused-class-name': 'warn' // Warn about unused CSS class names
 	},
 	ignorePatterns: [
-		".DS_Store",
-		"node_modules",
-		"/build",
-		"/.svelte-kit",
-		"/package",
-		".env",
-		".env.*",
-		"!.env.example",
-		".svelte-kit/",
-		"build/",
-		"dist/",
-		"pnpm-lock.yaml",
-		"package-lock.json",
-		"yarn.lock"
+		'.DS_Store',
+		'node_modules',
+		'/build',
+		'/.svelte-kit',
+		'/package',
+		'.env',
+		'.env.*',
+		'!.env.example',
+		'.svelte-kit/',
+		'build/',
+		'dist/',
+		'pnpm-lock.yaml',
+		'package-lock.json',
+		'yarn.lock'
 	]
 };
