@@ -18,11 +18,12 @@
 
 	const getResultText = (result: string) => {
 		switch (result) {
+
 			case 'SUCCESS_STUDENT_ADD':
 				return 'Usuario registrado ✓';
 			case 'ERROR_STUDENT_AUTH':
 				return 'Error: Acceso denegado';
-			case 'ERROR_STUDENT_EMAIL':
+			case 'ERROR_STUDENT_EXISTING':
 				return 'Error: Correo ya registrado';
 
 			case 'SUCCESS_EXAM_ADD':
@@ -38,8 +39,6 @@
 				return 'Asistencia registrada ✓';
 			case 'ERROR_ATTENDANCE_AUTH':
 				return 'Error: Acceso denegado';
-			case 'ERROR_ATTENDANCE_EMAIL':
-				return 'Error: Correo no registrado';
 			case 'ERROR_ATTENDANCE_LOCATION':
 				return 'Error: Ubicación inválida';
 			case 'ERROR_ATTENDANCE_FACE':
