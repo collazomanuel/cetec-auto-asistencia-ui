@@ -147,10 +147,11 @@
 		};
 		initialize();
 		return () => {
-			video?.srcObject &&
+			if (video?.srcObject) {
 				(video.srcObject as MediaStream)
 					.getTracks()
-					.forEach((track: MediaStreamTrack) => track.stop()); // Add type assertion
+					.forEach((track: MediaStreamTrack) => track.stop());
+			}
 		};
 	});
 </script>
