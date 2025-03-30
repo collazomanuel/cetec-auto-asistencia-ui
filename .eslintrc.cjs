@@ -30,5 +30,21 @@ module.exports = {
 		'svelte/no-at-html-tags': 'warn', // Warn when using @html to avoid XSS risks
 		'svelte/valid-compile': 'error', // Ensure valid Svelte syntax
 		'svelte/no-unused-class-name': 'warn' // Warn about unused CSS class names
-	}
+	},
+	ignorePatterns: [
+		".DS_Store",
+		"node_modules",
+		"/build",
+		"/.svelte-kit",
+		"/package",
+		".env",
+		".env.*",
+		"!.env.example",
+		".svelte-kit/",
+		"build/",
+		"dist/",
+		"pnpm-lock.yaml",
+		"package-lock.json",
+		"yarn.lock"
+	]
 };
