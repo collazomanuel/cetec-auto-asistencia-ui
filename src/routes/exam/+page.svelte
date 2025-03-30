@@ -1,7 +1,7 @@
 <script>
 	import '../../styles.css';
 	import ExamController from '../../ExamController.svelte';
-	import { signIn, signOut } from '@auth/sveltekit/client';
+	import { signIn } from '@auth/sveltekit/client';
 	import { page } from '$app/stores';
 </script>
 

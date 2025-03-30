@@ -18,8 +18,8 @@ export const { handle } = SvelteKitAuth({
 			}
 			return token;
 		},
-		async session({ session, token, user }) {
-			//@ts-ignore
+		async session({ session, token }) {
+			//@ts-expect-error: Missing property
 			session.access_token = token.accessToken;
 			return session;
 		}

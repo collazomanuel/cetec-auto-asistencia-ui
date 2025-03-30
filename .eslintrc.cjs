@@ -22,14 +22,12 @@ module.exports = {
 		node: true
 	},
 	rules: {
-		// Example rules (customize as needed)
 		'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 		'@typescript-eslint/explicit-function-return-type': 'off',
 		'@typescript-eslint/no-explicit-any': 'warn',
 		'svelte/no-at-html-tags': 'warn',
-		'svelte/no-at-html-tags': 'warn', // Warn when using @html to avoid XSS risks
-		'svelte/valid-compile': 'error', // Ensure valid Svelte syntax
-		'svelte/no-unused-class-name': 'warn' // Warn about unused CSS class names
+		'svelte/valid-compile': 'error',
+		'svelte/no-unused-class-name': 'warn'
 	},
 	ignorePatterns: [
 		'.DS_Store',
