@@ -58,7 +58,9 @@
 			faceDetectorOptions
 		);
 		const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-		video.srcObject = stream;
+		if (video) {
+			video.srcObject = stream;
+		}
 		await predictWebcam();
 	};
 
@@ -110,13 +112,13 @@
 			mode = Mode.LOADING;
 			const student = createStudentObject();
 			const response = await addStudent(student, userToken);
-			result = response;
+			result = response ?? null;
 			mode = Mode.RESULT;
 		} else if (mode == Mode.ADD_ATTENDANCE) {
 			mode = Mode.LOADING;
 			const attendance = createAttendanceObject();
 			const response = await addAttendance(attendance, userToken);
-			result = response;
+			result = response ?? null;
 			mode = Mode.RESULT;
 		} else {
 			console.log('Invalid submit mode');
