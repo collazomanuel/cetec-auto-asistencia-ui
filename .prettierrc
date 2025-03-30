@@ -10,8 +10,7 @@
 			"options": {
 				"parser": "svelte",
 				"svelteSortOrder": "scripts-markup-options-styles",
-				"svelteStrictMode": true,
-				"svelteBracketNewLine": true
+				"svelteStrictMode": true
 			}
 		}
 	]
