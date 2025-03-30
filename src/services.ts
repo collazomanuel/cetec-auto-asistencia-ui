@@ -1,5 +1,8 @@
-
-import { sendGetRequest, sendPostRequest, sendPutRequest } from './requestQueue';
+import {
+	sendGetRequest,
+	sendPostRequest,
+	sendPutRequest
+} from './requestQueue';
 
 import type { UserType, ExamType, AttendanceType } from '$lib/types';
 
@@ -16,7 +19,13 @@ const getExams = async (filter: boolean) => {
 const addExam = async (exam: ExamType, userToken: string) => {
 	try {
 		const url = import.meta.env.VITE_API_URL + '/exam';
-		const body = { code: '', name: exam?.name, start: exam?.start, length: exam?.length, margin: exam?.margin };
+		const body = {
+			code: '',
+			name: exam?.name,
+			start: exam?.start,
+			length: exam?.length,
+			margin: exam?.margin
+		};
 		const response = await sendPostRequest(url, body, userToken);
 		return response;
 	} catch (error) {
@@ -27,7 +36,13 @@ const addExam = async (exam: ExamType, userToken: string) => {
 const editExam = async (exam: ExamType, userToken: string) => {
 	try {
 		const url = import.meta.env.VITE_API_URL + '/exam';
-		const body = { code: exam?.code, name: exam?.name, start: exam?.start, length: exam?.length, margin: exam?.margin };
+		const body = {
+			code: exam?.code,
+			name: exam?.name,
+			start: exam?.start,
+			length: exam?.length,
+			margin: exam?.margin
+		};
 		const response = await sendPutRequest(url, body, userToken);
 		return response;
 	} catch (error) {
@@ -49,7 +64,14 @@ const addStudent = async (user: UserType, userToken: string) => {
 const addAttendance = async (attendance: AttendanceType, userToken: string) => {
 	try {
 		const url = import.meta.env.VITE_API_URL + '/attendance';
-		const body = { email: '', code: attendance?.code, latitude: attendance?.latitude, longitude: attendance?.longitude, accuracy: attendance?.accuracy, image: attendance?.image };
+		const body = {
+			email: '',
+			code: attendance?.code,
+			latitude: attendance?.latitude,
+			longitude: attendance?.longitude,
+			accuracy: attendance?.accuracy,
+			image: attendance?.image
+		};
 		const response = await sendPostRequest(url, body, userToken);
 		return response;
 	} catch (error) {

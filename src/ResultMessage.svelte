@@ -1,24 +1,19 @@
-<script lang='ts'>
+<script lang="ts">
 	import './styles.css';
 	import { onMount } from 'svelte';
 
 	export let result;
 
-	onMount(async () => {
-	});
+	onMount(async () => {});
 
 	const getResultClass = (result: string) => {
-		if (result.startsWith('SUCCESS'))
-			return 'success';
-		else if (result.startsWith('ERROR'))
-			return 'error';
-		else
-			return '';
+		if (result.startsWith('SUCCESS')) return 'success';
+		else if (result.startsWith('ERROR')) return 'error';
+		else return '';
 	};
 
 	const getResultText = (result: string) => {
 		switch (result) {
-
 			case 'SUCCESS_STUDENT_ADD':
 				return 'Usuario registrado ✓';
 			case 'ERROR_STUDENT_AUTH':
@@ -48,7 +43,6 @@
 				return 'Error de comunicación con el servicio, intente nuevamente más tarde';
 		}
 	};
-
 </script>
 
 <section>

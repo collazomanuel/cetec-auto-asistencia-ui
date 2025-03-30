@@ -1,8 +1,15 @@
-<script lang='ts'>
+<script lang="ts">
 	import './styles.css';
-	
+
 	import { onMount } from 'svelte';
-	import { Styles, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from '@sveltestrap/sveltestrap';
+	import {
+		Styles,
+		Input,
+		Dropdown,
+		DropdownToggle,
+		DropdownMenu,
+		DropdownItem
+	} from '@sveltestrap/sveltestrap';
 
 	import { getExams, addExam, editExam } from './services';
 	import ResultMessage from '../src/ResultMessage.svelte';
@@ -87,8 +94,7 @@
 				result = await addExam(exam, userToken);
 			else if (selectedMode === Mode.EDIT_EXAM)
 				result = await editExam(exam, userToken);
-			else
-				throw new Error('Invalid submit mode');
+			else throw new Error('Invalid submit mode');
 			mode = Mode.RESULT;
 		} catch (error) {
 			console.error('Failed to submit exam:', error);
@@ -102,17 +108,16 @@
 		await setExams();
 		mode = Mode.DEFAULT;
 	});
-
 </script>
 
 <section>
-	<div class='resultScreen'>
+	<div class="resultScreen">
 		{#if mode == Mode.LOADING || mode == Mode.INIT}
 			<LoadingSpinner />
 		{:else if mode == Mode.RESULT}
 			<ResultMessage {result} />
 			<button
-				class='button returnButton'
+				class="button returnButton"
 				on:click={() => {
 					resetForm();
 					result = null;
@@ -124,14 +129,14 @@
 		{/if}
 	</div>
 	<div
-		class='exam'
+		class="exam"
 		style={mode == Mode.INIT || mode == Mode.LOADING || mode == Mode.RESULT
 			? 'visibility: hidden;'
 			: ''}
 	>
 		<Styles />
-		<Dropdown direction='down' class='dropdown'>
-			<DropdownToggle color='white' caret>
+		<Dropdown direction="down" class="dropdown">
+			<DropdownToggle color="white" caret>
 				{mode == Mode.DEFAULT
 					? 'Elegir acción'
 					: mode == Mode.EDIT_EXAM
@@ -168,45 +173,56 @@
 		</Dropdown>
 
 		{#if mode != Mode.DEFAULT}
-			<Input class='input name' type='text' placeholder='Ingresar nombre' bind:value={name} />
-			<div class='datetimeContainer'>
+			<Input
+				class="input name"
+				type="text"
+				placeholder="Ingresar nombre"
+				bind:value={name}
+			/>
+			<div class="datetimeContainer">
 				<Input
-					class='input datetime calendar'
-					type='datetime-local'
-					placeholder='Comienzo'
+					class="input datetime calendar"
+					type="datetime-local"
+					placeholder="Comienzo"
 					bind:value={start}
 				/>
-				<p class='input datetime'>{start ? formatDatetime(start) : 'Ingresar fecha y hora'}</p>
+				<p class="input datetime">
+					{start ? formatDatetime(start) : 'Ingresar fecha y hora'}
+				</p>
 			</div>
-			<div class='lengthContainer'>
-				<p class='input length'>Duración:</p>
+			<div class="lengthContainer">
+				<p class="input length">Duración:</p>
 				<Input
-					class='input length lengthInput'
-					type='number'
-					placeholder='------'
-					min='0'
+					class="input length lengthInput"
+					type="number"
+					placeholder="------"
+					min="0"
 					bind:value={length}
 				/>
-				<p class='input length'>minutos</p>
+				<p class="input length">minutos</p>
 			</div>
-			<div class='marginContainer'>
-				<p class='input margin'>Margen:</p>
+			<div class="marginContainer">
+				<p class="input margin">Margen:</p>
 				<Input
-					class='input margin marginInput'
-					type='number'
-					placeholder='------'
-					min='0'
+					class="input margin marginInput"
+					type="number"
+					placeholder="------"
+					min="0"
 					bind:value={margin}
 				/>
-				<p class='input length'>minutos</p>
+				<p class="input length">minutos</p>
 			</div>
 			<button
-				class='button examButton'
+				class="button examButton"
 				on:click={handleSubmit}
 				disabled={!(name && start && length && margin) &&
 					!(mode == Mode.ADD_EXAM || mode == Mode.EDIT_EXAM)}
 			>
-				{mode == Mode.ADD_EXAM ? 'Agregar examen' : mode == Mode.EDIT_EXAM ? 'Editar examen' : ''}
+				{mode == Mode.ADD_EXAM
+					? 'Agregar examen'
+					: mode == Mode.EDIT_EXAM
+						? 'Editar examen'
+						: ''}
 			</button>
 		{/if}
 	</div>

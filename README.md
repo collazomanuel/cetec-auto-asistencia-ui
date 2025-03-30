@@ -1,4 +1,3 @@
-
 # CETEC Auto-Asistencia
 
 Este es el front-end del CETEC Auto-Asistencia hecho con SvelteKit, diseñado para el uso de los alumnos de la Facultad de Ingeniería de la Universidad de Buenos Aires.
